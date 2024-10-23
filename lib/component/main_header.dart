@@ -3,6 +3,7 @@ import 'package:banhang/controller/CartController.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:get/get.dart';
+import 'package:badges/badges.dart' as badges;
 
 class MainHeader extends StatelessWidget {
   const MainHeader({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class MainHeader extends StatelessWidget {
           GetBuilder<CartController>(
             init: CartController(), // Khởi tạo controller nếu chưa được khởi tạo
             builder: (controller) {
-              return Badge(
+              return badges.Badge(
                 badgeContent: Text(
                   "${controller.itemCart.value}", // Hiển thị số lượng giỏ hàng
                   style: const TextStyle(color: Colors.white),

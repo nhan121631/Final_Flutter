@@ -49,12 +49,12 @@ class ProductCard extends StatelessWidget {
           const SizedBox(width: 10),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              primary: Colors.orange.shade500,
-              onPrimary: Colors.white,
+              backgroundColor: Colors.orange.shade500, // Thay primary bằng backgroundColor
+              foregroundColor: Colors.white, // Thay thế onPrimary bằng foregroundColor
             ),
             onPressed: () async {
-               CartController().addCart(product.id, 2);
-                _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
+              CartController().addCart(product.id, 2);
+              _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
             icon: const Icon(Icons.add, size: 18),
             label: const Text("Add to Cart"),
@@ -71,8 +71,10 @@ class ProductCard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title,
-          style: const TextStyle(color: Colors.green),),
+          title: Text(
+            title,
+            style: const TextStyle(color: Colors.green),
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

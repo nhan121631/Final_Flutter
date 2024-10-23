@@ -1,3 +1,11 @@
+class Tag {
+  final String title;
+  final double price;
+
+  Tag({required this.title, required this.price});
+}
+
+
 class Product {
   final int id; // ID của sản phẩm
   final String name; // Tên sản phẩm
@@ -6,6 +14,8 @@ class Product {
   final String thumbnail; // Hình ảnh thu nhỏ
   final int quantity; // Số lượng
   final String description; // Mô tả
+  final List<String> images; // Danh sách hình ảnh
+  final List<Tag> tags; // Danh sách tag (giá)
 
   // Constructor
   Product({
@@ -16,6 +26,8 @@ class Product {
     required this.thumbnail,
     required this.quantity,
     required this.description,
+    required this.images,
+    required this.tags,
   });
 // Phương thức fromJson
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -27,6 +39,8 @@ class Product {
       thumbnail: json['thumbnail'],
       quantity: json['quantity'],
       description: json['description'],
+      images: json['images'],
+      tags: json['tags'],
     );
   }
 
