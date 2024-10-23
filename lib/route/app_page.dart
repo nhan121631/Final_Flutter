@@ -3,11 +3,20 @@ import 'package:get/get.dart';
 import 'package:banhang/route/app_route.dart';
 import 'package:banhang/view/dashboard/dashboard_screen.dart';
 
+import '../view/auth/login/LoginSceen.dart';
+
 class AppPage {
   static var list = [
     GetPage(
         name: AppRoute.dashboard,
         page: () => const DashboardScreen(),
-        binding: DashboardBinding())
+        binding: DashboardBinding()),
+
+    GetPage(
+      name: AppRoute.login,
+      page: () => const LoginScreen(),
+    ),
+
   ];
+
 }

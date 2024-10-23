@@ -1,7 +1,6 @@
 import 'dart:convert'; // Đảm bảo nhập thư viện này
 import 'package:banhang/utils/app_constants.dart';
 import 'package:http/http.dart' as http; // Sử dụng alias 'http'
-import 'package:banhang/model/products_model.dart';
 
 class RemoteCartService {
   var client = http.Client();

@@ -1,4 +1,5 @@
 import 'package:banhang/controller/CartController.dart';
+import 'package:banhang/controller/auth_controller.dart';
 import 'package:banhang/controller/category_controller.dart';
 import 'package:banhang/controller/dashboard_controller.dart';
 import 'package:banhang/controller/home_controller.dart';
@@ -11,6 +12,7 @@ class DashboardBinding extends Bindings {
     Get.put(HomeController());
     Get.put(CartController());
     Get.put(CategoryController());
+    Get.put(AuthController());
 
   }
 }
