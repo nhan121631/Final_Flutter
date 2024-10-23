@@ -4,6 +4,7 @@ import 'package:banhang/route/app_route.dart';
 import 'package:banhang/view/dashboard/dashboard_screen.dart';
 
 import '../view/auth/login/LoginSceen.dart';
+import '../view/auth/register/RegisterScreen.dart';
 
 class AppPage {
   static var list = [
@@ -15,6 +16,10 @@ class AppPage {
     GetPage(
       name: AppRoute.login,
       page: () => const LoginScreen(),
+    ),
+    GetPage(
+      name: AppRoute.register,
+      page: () => const RegisterScreen(),
     ),
 
   ];

@@ -1,4 +1,5 @@
 import 'package:banhang/controller/CartController.dart';
+import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:banhang/model/products_model.dart';
 
@@ -53,7 +54,7 @@ class ProductCard extends StatelessWidget {
               onPrimary: Colors.white,
             ),
             onPressed: () async {
-               CartController().addCart(product.id, 2);
+               CartController().addCart(product.id, authController.user.value.id);
                 _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
             icon: const Icon(Icons.add, size: 18),

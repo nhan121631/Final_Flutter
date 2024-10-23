@@ -2,6 +2,8 @@ import 'package:banhang/utils/app_constants.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../../model/user_model.dart';
+
 class AuthService {
   var client = http.Client();
   var remoteUrl = '$baseUrl/api';
@@ -41,6 +43,51 @@ class AuthService {
       rethrow; // Ném lại ngoại lệ để xử lý ở nơi khác
     }
   }
+// Thêm hàm register
+  Future<Map<String, dynamic>> register(
+      String fullName, String username, String email, String password) async {
+    // In thông tin gửi lên console để kiểm tra
+    print("Sending request to $baseUrl/api/register with body: ${{
+      'userName': username,
+      'password': password,
+      'fullName': fullName,
+      'email': email,
+    }}");
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/register'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'userName': username,
+          'password': password,
+          'fullName': fullName,
+          'email': email,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Nếu đăng ký thành công
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        // Trường hợp thất bại, trả về thông tin lỗi
+        return {
+          'success': false,
+          'message': 'Failed to create account',
+          'error': response.body,
+        };
+      }
+    } catch (e) {
+      // Xử lý ngoại lệ nếu có lỗi kết nối hoặc lỗi không mong muốn
+      return {
+        'success': false,
+        'message': 'An error occurred',
+        'error': e.toString(),
+      };
+    }
+  }
+
 }
-
-
