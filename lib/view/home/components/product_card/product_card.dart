@@ -49,8 +49,7 @@ class ProductCard extends StatelessWidget {
           const SizedBox(width: 10),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              primary: Colors.orange.shade500,
-              onPrimary: Colors.white,
+              foregroundColor: Colors.white, backgroundColor: Colors.orange.shade500,
             ),
             onPressed: () async {
                CartController().addCart(product.id, 2);

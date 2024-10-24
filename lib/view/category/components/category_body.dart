@@ -62,7 +62,7 @@ class NoGlowScrollBehavior extends ScrollBehavior {
   Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (OverscrollIndicatorNotification overscroll) {
-        overscroll.disallowGlow();
+        overscroll.disallowIndicator();
         return true;
       },
       child: child,
