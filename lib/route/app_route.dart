@@ -4,4 +4,5 @@ class AppRoute {
   static const String register = "/register";
   static const String fogotpass = "/fogotpass";
   static const String acceptcode = "/fogotpass/acceptcode";
+
 }

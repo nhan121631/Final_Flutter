@@ -2,8 +2,11 @@ import 'package:banhang/controller/CartController.dart';
 import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:banhang/model/products_model.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../utils/app_constants.dart';
+import '../../../product_details/productdetails_screen.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -12,7 +15,17 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+        onTap: () {
+          // Chuyển hướng đến màn hình chi tiết sản phẩm
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailsScreen(product: product),
+            ),
+          );
+        },
+     child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -20,6 +33,7 @@ class ProductCard extends StatelessWidget {
         border: Border.all(color: Colors.grey.withOpacity(.3), width: .2),
       ),
       child: Row(
+
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(width: 10),
@@ -30,6 +44,7 @@ class ProductCard extends StatelessWidget {
               fit: BoxFit.cover,
               height: 120,
               width: 120,
+
             ),
           ),
           const SizedBox(width: 10),
@@ -54,7 +69,10 @@ class ProductCard extends StatelessWidget {
               onPrimary: Colors.white,
             ),
             onPressed: () async {
-               CartController().addCart(product.id, authController.user.value.id);
+              final CartController cartController = Get.find<CartController>(); // Lấy instance từ GetX
+              CartController().addCart(product.id, authController.user.value.id);
+               CartController().itemCart.value++;
+               cartController.update();
                 _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
             icon: const Icon(Icons.add, size: 18),
@@ -63,6 +81,7 @@ class ProductCard extends StatelessWidget {
           const SizedBox(width: 10),
         ],
       ),
+    ),
     );
   }
 

@@ -20,7 +20,7 @@ class ProductCardLoading extends StatelessWidget {
             width: 120,
             child: Column(
               children: [
-                AspectRatio(aspectRatio: 0.9,
+                AspectRatio(aspectRatio: 1.8,
                   child: Container(
                     color: Colors.grey,
                     padding: const EdgeInsets.all(25),

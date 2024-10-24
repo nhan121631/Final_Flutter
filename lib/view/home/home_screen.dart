@@ -27,26 +27,46 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(
             height: 40,
           ),
-          const Text(
-            "Sản phẩm bán chạy",
-            style: TextStyle(color: Colors.black,
-            fontSize: 30,
-            fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Obx(() {
-            if (homeController.productPobulars.isNotEmpty) {
-              return Expanded(
-                child: ProductListView(products: homeController.productPobulars),
+        Obx(() {
+          if (!homeController.isSearch.value) {
+            if(homeController.isPopular.value) {
+              return const Text(
+                "Sản phẩm bán chạy",
+                style: TextStyle(color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
               );
-            } else {
-              return ProductLoading();
+            }else{
+              return const Text(
+                "Sản phẩm cần tìm",
+                style: TextStyle(color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
+              );
             }
-          }),
-
-        ],
+        }else{
+            return const Text(
+              "Không tìm thấy sản phẩm",
+              style: TextStyle(color: Colors.black,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold),
+            );
+          }
+        }),
+            const SizedBox(
+              height: 20,
+            ),
+            Obx(() {
+              if (homeController.productPobulars.isNotEmpty) {
+                return Expanded(
+                  child: ProductListView(
+                      products: homeController.productPobulars),
+                );
+              } else {
+                return Expanded(child: ProductLoading());
+              }
+            }),
+          ],
       ),
     );
   }

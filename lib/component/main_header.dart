@@ -1,5 +1,5 @@
-import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/controller/CartController.dart';
+import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:get/get.dart';
@@ -9,6 +9,10 @@ class MainHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // You should ensure that CartController is initialized globally in your app
+    // Either in your main function or another appropriate place
+    // Get.put(CartController()); // Place this in the main() function of your app
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -37,8 +41,12 @@ class MainHeader extends StatelessWidget {
               ),
               child: TextField(
                 autofocus: false,
-                onSubmitted: (val) {},
-                onChanged: (val) {},
+                onSubmitted: (val) {
+                  homeController.getProductSearch(val);
+                },
+                onChanged: (val) {
+                  homeController.getProductSearch(val);
+                },
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -58,12 +66,10 @@ class MainHeader extends StatelessWidget {
           ),
           const SizedBox(width: 10),
 
-          GetBuilder<CartController>(
-            init: CartController(), // Khởi tạo controller nếu chưa được khởi tạo
-            builder: (controller) {
+          Obx(() {
               return Badge(
                 badgeContent: Text(
-                  "${controller.itemCart.value}", // Hiển thị số lượng giỏ hàng
+                  "${cartController.itemCart.value}",
                   style: const TextStyle(color: Colors.white),
                 ),
                 badgeStyle: BadgeStyle(
@@ -89,8 +95,8 @@ class MainHeader extends StatelessWidget {
                   ),
                 ),
               );
-            },
-          ),
+            }),
+
 
           const SizedBox(width: 5),
         ],

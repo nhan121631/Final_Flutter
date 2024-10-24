@@ -1,3 +1,4 @@
+import 'package:banhang/controller/controllers.dart';
 import 'package:get/get.dart';
 import 'package:banhang/service/remote_service/remote_cart_service.dart';
 
@@ -8,7 +9,7 @@ class CartController extends GetxController {
 
   @override
   void onInit() {
-    getQuantity(2);
+    getQuantity(authController.user.value.id);
     super.onInit();
   }
 
@@ -20,7 +21,8 @@ class CartController extends GetxController {
   Future<void> getQuantity(int userId) async {
     try {
       int quantity = await RemoteCartService().getQuantity(userId);
-      itemCart.value = quantity; // Cập nhật giá trị itemCart
+      itemCart(quantity);
+      print("ok");
       update(); // Gọi update() để làm mới GetBuilder
     } catch (e) {
       print('Error: $e');
