@@ -1,6 +1,6 @@
 {
-    "name": "banhang",
-    "short_name": "banhang",
+    "name": "sell_goods_app",
+    "short_name": "sell_goods_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

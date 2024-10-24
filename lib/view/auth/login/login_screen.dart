@@ -117,7 +117,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                     //     Get.toNamed(AppRoute.forgotpass); // Điều hướng đến màn hình quên mật khẩu
+                         Get.toNamed(AppRoute.forgotpass); // Điều hướng đến màn hình quên mật khẩu
                         },
                         child: const Text(
                           'Forgot Password',

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../view/auth/login/LoginSceen.dart';
+import '../view/auth/login/login_screen.dart';
 import '../view/auth/login/fogot_password_screen.dart';
 import '../view/auth/register/register_screen.dart';
 import '../view/dashboard/dashboard_binding.dart';
@@ -27,7 +27,7 @@ class AppPage {
     ),
 
     GetPage(
-      name: AppRoute.fogotpass,
+      name: AppRoute.forgotpass,
       page: () => const FogotPasswordScreen(),
       children: [
         GetPage(
