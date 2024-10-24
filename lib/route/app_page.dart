@@ -27,7 +27,7 @@ class AppPage {
     ),
 
     GetPage(
-      name: AppRoute.forgotpass,
+      name: AppRoute.fogotpass,
       page: () => const FogotPasswordScreen(),
       children: [
         GetPage(
