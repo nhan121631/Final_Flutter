@@ -1,16 +1,21 @@
+import 'package:banhang/model/cart_item_model.dart';
+import 'package:banhang/utils/app_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class CartItemWidget extends StatelessWidget {
-  final String textLink;
-  final int index;
+  final CartItem cartItem;
 
   const CartItemWidget({
     super.key,
-    required this.textLink,
-    required this.index,
+    required this.cartItem,
   });
+
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +27,8 @@ class CartItemWidget extends StatelessWidget {
             height: 100,
             width: 100,
             decoration: BoxDecoration(
-              image: const DecorationImage(
-                image: AssetImage('assets/images/product_test.jpg'),
+              image: DecorationImage(
+                image: NetworkImage('$baseUrl/image/${cartItem.product.thumbnail}'),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(10),
@@ -35,8 +40,8 @@ class CartItemWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Sample Product",
+                Text(
+                  '${cartItem.product.name}',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -53,8 +58,8 @@ class CartItemWidget extends StatelessWidget {
                       GestureDetector(
                         child: const ComponentButtonPlusMinus(icon: Icons.add),
                       ),
-                      const Text(
-                        "01",
+                      Text(
+                        '${cartItem.quantity}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -84,8 +89,8 @@ class CartItemWidget extends StatelessWidget {
                 ),
               ),
               const Spacer(flex: 1),
-              const Text(
-                "\$100.00",
+              Text(
+                "\₫${formatCurrency(cartItem.product.sellPrice * cartItem.quantity)}",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

@@ -33,7 +33,6 @@ class ProductCard extends StatelessWidget {
         border: Border.all(color: Colors.grey.withOpacity(.3), width: .2),
       ),
       child: Row(
-
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(width: 10),
@@ -68,7 +67,7 @@ class ProductCard extends StatelessWidget {
               foregroundColor: Colors.white, backgroundColor: Colors.orange.shade500,
             ),
             onPressed: () async {
-              CartController().addCart(product.id, 2);
+              CartController().addCart(product.id, authController.user.value.id);
               _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
             icon: const Icon(Icons.add, size: 18),

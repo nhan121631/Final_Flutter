@@ -1,4 +1,6 @@
 import 'package:badges/badges.dart' as badges;
+import 'package:banhang/controller/controllers.dart';
+import 'package:banhang/model/cart_item_model.dart';
 import 'package:banhang/route/app_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +87,7 @@ class MainHeader extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () {
-                Get.toNamed(AppRoute.cart);
+                cartController.loadCart();
                 // Navigator.pushNamed(context, '/cart');
               },
               child: Container(

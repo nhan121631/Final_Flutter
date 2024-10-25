@@ -1,5 +1,7 @@
+import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'components/cart_item_widget.dart';
 
@@ -11,6 +13,16 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  // Hàm tính tổng giá trị của các sản phẩm trong giỏ hàng
+  double calculateTotal() {
+    return cartController.cartItems.fold(0, (sum, item) => sum + (item.product.sellPrice * item.quantity));
+  }
+
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +32,7 @@ class _CartScreenState extends State<CartScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: GestureDetector(
-            onTap: () =>  Navigator.pop(context),
+            onTap: () => Navigator.pop(context),
             child: const Icon(
               CupertinoIcons.chevron_back,
               color: Colors.black,
@@ -44,16 +56,16 @@ class _CartScreenState extends State<CartScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
+                  // Danh sách sản phẩm trong giỏ hàng
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.58,
                     child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) {
                         return CartItemWidget(
-                          textLink: "Minimal Stand",
-                          index: index,
+                          cartItem: cartController.cartItems[index],
                         );
                       },
-                      itemCount: 3, // Example count; replace as needed
+                      itemCount: cartController.cartItems.length,
                       separatorBuilder: (BuildContext context, int index) {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -62,74 +74,30 @@ class _CartScreenState extends State<CartScreen> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 55,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.7,
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                hintText: "Promo Code",
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
+                  const SizedBox(height: 20),
+                  // Tổng tiền giỏ hàng
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        const Text(
+                          "Total",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF808080), // màu xám
                           ),
-                          SizedBox(
-                            height: 55,
-                            width: 55,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.black,
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  CupertinoIcons.chevron_forward,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 70,
-                    width: MediaQuery.of(context).size.width,
-                    child: const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Total",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF808080), // grey color
-                            ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "\₫${formatCurrency(calculateTotal())}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
-                          Spacer(),
-                          Text(
-                            "\$ 123.45", // Example total; replace as needed
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   ClipRRect(
@@ -151,7 +119,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
