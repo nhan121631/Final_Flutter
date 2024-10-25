@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../route/app_route.dart';
 
-class FogotPasswordScreen extends StatelessWidget {
-  const FogotPasswordScreen({super.key});
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
