@@ -2,7 +2,6 @@ import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'components/cart_item_widget.dart';
 
 class CartScreen extends StatefulWidget {
@@ -13,14 +12,40 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  // Hàm tính tổng giá trị của các sản phẩm trong giỏ hàng
-  double calculateTotal() {
-    return cartController.cartItems.fold(0, (sum, item) => sum + (item.product.sellPrice * item.quantity));
-  }
-
+  double _total = 0.0; // Biến để lưu tổng giá trị
   String formatCurrency(double amount) {
     final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
     return vnCurrency.format(amount);
+  }
+
+  // Phương thức để tính tổng
+  void _calculateTotal() {
+    double total = 0.0;
+    for (var cartItem in cartController.cartItems) {
+      total += cartItem.product.sellPrice * cartItem.quantity; // Tính tổng
+    }
+    setState(() {
+      _total = total; // Cập nhật tổng
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateTotal(); // Tính tổng khi khởi tạo
+  }
+  void _onQuantityChanged(Map<double, int> productSell) {
+    setState(() {
+      double  sell= productSell.keys.first;
+      int i = productSell.values.first;
+      if(i<0) {
+        _total -= sell;
+        print("i: ${i}, total: ${_total}");
+      }else{
+        _total += sell;
+        print("i: ${i}, total: ${_total}");
+      }
+    });
   }
 
   @override
@@ -56,13 +81,13 @@ class _CartScreenState extends State<CartScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  // Danh sách sản phẩm trong giỏ hàng
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.58,
                     child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) {
                         return CartItemWidget(
-                          cartItem: cartController.cartItems[index],
+                          cartitem: cartController.cartItems[index],
+                          onQuantityChanged: _onQuantityChanged,
                         );
                       },
                       itemCount: cartController.cartItems.length,
@@ -74,30 +99,74 @@ class _CartScreenState extends State<CartScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  // Tổng tiền giỏ hàng
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        const Text(
-                          "Total",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF808080), // màu xám
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 55,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            child: const TextField(
+                              decoration: InputDecoration(
+                                hintText: "Promo Code",
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "\₫${formatCurrency(calculateTotal())}",
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          SizedBox(
+                            height: 55,
+                            width: 55,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.black,
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  CupertinoIcons.chevron_forward,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 70,
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Total",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF808080),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            "\₫ ${formatCurrency(_total)}", // Hiển thị tổng giá trị
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   ClipRRect(
@@ -106,9 +175,9 @@ class _CartScreenState extends State<CartScreen> {
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(MediaQuery.of(context).size.width, 60),
-                        backgroundColor: Colors.black,
+                        backgroundColor: Colors.orange,
                         elevation: 15,
-                        shadowColor: Colors.black,
+                        shadowColor: Colors.orange,
                       ),
                       child: const Text(
                         "Check Out",
