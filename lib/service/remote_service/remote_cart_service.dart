@@ -1,4 +1,5 @@
 import 'dart:convert'; // Đảm bảo nhập thư viện này
+import 'package:banhang/model/cart_item_model.dart';
 import 'package:banhang/utils/app_constants.dart';
 import 'package:http/http.dart' as http; // Sử dụng alias 'http'
 
@@ -52,5 +53,29 @@ class RemoteCartService {
       return 0;
     }
   }
+
+  Future<List<CartItem>> getCartItem(int idUser) async {
+    print(remoteUrl);
+    try {
+      // Tạo URL với tham số idUser
+      var response = await client.get(
+        Uri.parse('${remoteUrl}/get?user_id=$idUser'),
+      );
+
+      // Kiểm tra mã trạng thái
+      if (response.statusCode == 200) {
+          var jsonResponse = json.decode(response.body) as List;
+        return jsonResponse.map((cartitem) => CartItem.fromJson(cartitem)).toList();
+      } else {
+        // Nếu không thành công, ném ra một ngoại lệ
+        throw Exception('Failed to get cartItem');
+      }
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Error: $e');
+      return [];
+    }
+  }
+
 
 }

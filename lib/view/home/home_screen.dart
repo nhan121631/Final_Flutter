@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/view/home/components/carousel_slider/carousel_loading.dart';
 import 'package:banhang/view/home/components/carousel_slider/carusel_slider_view.dart';
-import 'package:banhang/view/home/components/product_card/product_loading.dart';
 
 import 'components/product_card/product_card.dart';
 class HomeScreen extends StatelessWidget {

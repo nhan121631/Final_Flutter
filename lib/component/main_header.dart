@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:get/get.dart';
 
+import '../route/app_route.dart';
+
 class MainHeader extends StatelessWidget {
   const MainHeader({Key? key}) : super(key: key);
 
@@ -75,7 +77,14 @@ class MainHeader extends StatelessWidget {
                 badgeStyle: BadgeStyle(
                   badgeColor: Theme.of(context).primaryColor,
                 ),
-                child: Container(
+                child:  GestureDetector(
+            onTap: () {
+              cartController.loadCart();
+            //   cartController.getCartItem(authController.user.value.id);
+            // Get.toNamed(AppRoute.cart);
+            // Navigator.pushNamed(context, '/cart');
+            },
+            child: Container(
                   height: 46,
                   width: 46,
                   decoration: BoxDecoration(
@@ -94,6 +103,7 @@ class MainHeader extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
+              ),
               );
             }),
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../model/products_model.dart';
 import '../../../utils/app_constants.dart';
+import '../../product_details/productdetails_screen.dart';
 
 class ProductCateCard extends StatelessWidget {
   final Product product;
@@ -10,7 +11,17 @@ class ProductCateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return GestureDetector(
+        onTap: () {
+          // Chuyển hướng đến màn hình chi tiết sản phẩm
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailsScreen(product: product),
+            ),
+          );
+        },
+    child: Padding(
       padding: const EdgeInsets.fromLTRB(10, 10, 5, 10),
       child: Material(
         elevation: 8,
@@ -68,6 +79,8 @@ class ProductCateCard extends StatelessWidget {
           ),
         ),
       ),
+    )
     );
+
   }
 }
