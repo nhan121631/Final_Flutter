@@ -4,7 +4,7 @@ import 'package:banhang/route/app_route.dart';
 import 'package:banhang/view/dashboard/dashboard_screen.dart';
 
 import '../view/auth/login/LoginSceen.dart';
-import '../view/auth/register/RegisterScreen.dart';
+import '../view/auth/register/register_screen.dart';
 
 class AppPage {
   static var list = [
