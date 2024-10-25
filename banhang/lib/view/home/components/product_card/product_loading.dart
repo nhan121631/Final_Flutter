@@ -7,12 +7,12 @@ class ProductLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Container(
-      height: 140,
+      height: 80,
       padding: const EdgeInsets.only(right: 10),
       child: ListView.builder(
           scrollDirection: Axis.vertical,
           physics: const BouncingScrollPhysics(),
-          itemCount: 5,
+          itemCount: 3,
           itemBuilder: (context, index)=> const ProductCardLoading()
       ),
     );

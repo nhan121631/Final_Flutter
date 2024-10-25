@@ -26,7 +26,7 @@ class CategoryProductList extends StatelessWidget {
                   child: Text(
                     categories[index].name,
                     style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
-                    color: Colors.grey),
+                        color: Colors.grey),
                   ),
                 ),
 
