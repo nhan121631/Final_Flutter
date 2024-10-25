@@ -1,15 +1,45 @@
 import 'package:banhang/model/cart_item_model.dart';
 import 'package:banhang/utils/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class CartItemWidget extends StatelessWidget {
+class CartItemWidget extends StatefulWidget {
   final CartItem cartitem;
+  final ValueChanged<Map<double, int>> onQuantityChanged; // Callback function
+
 
   const CartItemWidget({
     super.key,
     required this.cartitem,
+    required this.onQuantityChanged, // Thêm đối số này
+
   });
 
+  @override
+  _CartItemWidgetState createState() => _CartItemWidgetState();
+}
+
+class _CartItemWidgetState extends State<CartItemWidget> {
+  late int _qty;
+  late double _sell;
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
+  @override
+  void initState() {
+    super.initState();
+    _qty = widget.cartitem.quantity; // Khởi tạo số lượng từ cartitem
+    _sell = widget.cartitem.product.sellPrice * _qty; // Tính tổng giá ban đầu
+  }
+  void _updateQuantity(int newQty, int i) {
+    setState(() {
+      _qty = newQty; // Cập nhật số lượng
+      _sell = _qty * widget.cartitem.product.sellPrice; // Cập nhật tổng giá
+    });
+    widget.onQuantityChanged({
+      widget.cartitem.product.sellPrice:i
+    });  }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -21,7 +51,7 @@ class CartItemWidget extends StatelessWidget {
             width: 100,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage('$baseUrl/image/${cartitem.product.thumbnail}'),
+                image: NetworkImage('$baseUrl/image/${widget.cartitem.product.thumbnail}'),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(10),
@@ -33,8 +63,8 @@ class CartItemWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Text(
-                  '${cartitem.product.name}',
+                Text(
+                  '${widget.cartitem.product.name}',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -49,21 +79,33 @@ class CartItemWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _updateQuantity(_qty + 1, 1);
+                          });
+                        },
                         child: const ComponentButtonPlusMinus(icon: Icons.add),
                       ),
                       Text(
-                        "${cartitem.quantity}",
+                        "$_qty", // Hiển thị số lượng
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (_qty > 1) {
+                              _updateQuantity(_qty - 1, -1);
+                            }
+                          });
+                        },
                         child: const ComponentButtonPlusMinus(icon: Icons.remove),
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -82,9 +124,9 @@ class CartItemWidget extends StatelessWidget {
                 ),
               ),
               const Spacer(flex: 1),
-               Text(
-                "${cartitem.product.sellPrice}",
-                style: TextStyle(
+              Text(
+                "₫${formatCurrency(_sell)}", // Hiển thị tổng giá
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF303030),
@@ -93,41 +135,6 @@ class CartItemWidget extends StatelessWidget {
             ],
           )
         ],
-      ),
-    );
-  }
-}
-
-class TotalSumm extends StatelessWidget {
-  const TotalSumm({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 70,
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Row(
-          children: const [
-            Text(
-              "Total",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF808080),
-              ),
-            ),
-            Spacer(flex: 1),
-            Text(
-              "\$300.00",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -68,46 +68,44 @@ class MainHeader extends StatelessWidget {
           ),
           const SizedBox(width: 10),
 
-          Obx(() {
+          ValueListenableBuilder<int>(
+            valueListenable: cartController.itemCart,
+            builder: (context, itemCount, child) {
               return Badge(
                 badgeContent: Text(
-                  "${cartController.itemCart.value}",
+                  "$itemCount",
                   style: const TextStyle(color: Colors.white),
                 ),
                 badgeStyle: BadgeStyle(
                   badgeColor: Theme.of(context).primaryColor,
                 ),
-                child:  GestureDetector(
-            onTap: () {
-              cartController.loadCart();
-            //   cartController.getCartItem(authController.user.value.id);
-            // Get.toNamed(AppRoute.cart);
-            // Navigator.pushNamed(context, '/cart');
-            },
-            child: Container(
-                  height: 46,
-                  width: 46,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.6),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  child: const Icon(
-                    Icons.shopping_cart_outlined,
-                    color: Colors.grey,
+                child: GestureDetector(
+                  onTap: () {
+                    cartController.loadCart();
+                  },
+                  child: Container(
+                    height: 46,
+                    width: 46,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.6),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
-              ),
               );
-            }),
-
-
+            },
+          ),
           const SizedBox(width: 5),
         ],
       ),

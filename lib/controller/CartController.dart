@@ -1,5 +1,6 @@
 import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/model/cart_item_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:banhang/service/remote_service/remote_cart_service.dart';
 
@@ -8,7 +9,8 @@ import '../route/app_route.dart';
 class CartController extends GetxController {
   static CartController instance = Get.find();
 
-  RxInt itemCart = 0.obs;
+  // RxInt itemCart = 0.obs;
+  ValueNotifier<int> itemCart = ValueNotifier<int>(0);
   RxList<CartItem> cartitems = List<CartItem>.empty(growable: true).obs;
 
   @override
@@ -19,14 +21,15 @@ class CartController extends GetxController {
 
   void addCart(int idProduct, int idUser) async {
     await RemoteCartService().addCart(idProduct, idUser);
-    await getQuantity(2); // Gọi lại getQuantity để cập nhật số lượng
+    await getQuantity(authController.user.value.id); // Gọi lại getQuantity để cập nhật số lượng
   }
 
   Future<void> getQuantity(int userId) async {
     try {
       int quantity = await RemoteCartService().getQuantity(userId);
-      itemCart(quantity);
-      print("ok");
+      itemCart.value = quantity;
+
+      print("item: ${itemCart.value}");
       update(); // Gọi update() để làm mới GetBuilder
     } catch (e) {
       print('Error: $e');

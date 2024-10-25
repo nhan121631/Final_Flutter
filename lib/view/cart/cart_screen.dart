@@ -1,13 +1,53 @@
 import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'components/cart_item_widget.dart';
+
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
+
 class _CartScreenState extends State<CartScreen> {
+  double _total = 0.0; // Biến để lưu tổng giá trị
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
+
+  // Phương thức để tính tổng
+  void _calculateTotal() {
+    double total = 0.0;
+    for (var cartItem in cartController.cartitems) {
+      total += cartItem.product.sellPrice * cartItem.quantity; // Tính tổng
+    }
+    setState(() {
+      _total = total; // Cập nhật tổng
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateTotal(); // Tính tổng khi khởi tạo
+  }
+  void _onQuantityChanged(Map<double, int> productSell) {
+    setState(() {
+      double  sell= productSell.keys.first;
+      int i = productSell.values.first;
+      if(i<0) {
+        _total -= sell;
+        print("i: ${i}, total: ${_total}");
+      }else{
+        _total += sell;
+        print("i: ${i}, total: ${_total}");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,7 +57,7 @@ class _CartScreenState extends State<CartScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: GestureDetector(
-            onTap: () =>  Navigator.pop(context),
+            onTap: () => Navigator.pop(context),
             child: const Icon(
               CupertinoIcons.chevron_back,
               color: Colors.black,
@@ -44,20 +84,19 @@ class _CartScreenState extends State<CartScreen> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.58,
                     child: ListView.separated(
-                      ////===================
                       itemBuilder: (BuildContext context, int index) {
                         return CartItemWidget(
-                         cartitem: cartController.cartitems[index],
+                          cartitem: cartController.cartitems[index],
+                          onQuantityChanged: _onQuantityChanged,
                         );
                       },
-                      itemCount: cartController.cartitems.length, // Example count; replace as needed
+                      itemCount: cartController.cartitems.length,
                       separatorBuilder: (BuildContext context, int index) {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: Divider(),
                         );
                       },
-                      ////============
                     ),
                   ),
                   SizedBox(
@@ -97,7 +136,7 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -105,22 +144,22 @@ class _CartScreenState extends State<CartScreen> {
                   SizedBox(
                     height: 70,
                     width: MediaQuery.of(context).size.width,
-                    child:  Padding(
-                      padding: EdgeInsets.all(20),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
                       child: Row(
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             "Total",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF808080), // grey color
+                              color: Color(0xFF808080),
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            "\$ 123.45", // Example total; replace as needed
-                            style: TextStyle(
+                            "\$ ${formatCurrency(_total)}", // Hiển thị tổng giá trị
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -149,7 +188,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
