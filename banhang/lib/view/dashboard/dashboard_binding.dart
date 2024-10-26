@@ -13,6 +13,5 @@ class DashboardBinding extends Bindings {
     Get.put(CartController());
     Get.put(CategoryController());
     Get.put(AuthController());
-
   }
 }

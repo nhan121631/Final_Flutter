@@ -1,12 +1,19 @@
+import 'package:banhang/controller/controllers.dart';
+import 'package:banhang/model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class UpdateProfileScreen extends StatelessWidget {
-  const UpdateProfileScreen({Key? key}) : super(key: key);
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+  UpdateProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    fullNameController.text = authController.user.value.fullname;
+    emailController.text = authController.user.value.email;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -27,7 +34,7 @@ class UpdateProfileScreen extends StatelessWidget {
                     height: 120,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: const Image(image: AssetImage('assets/images/profile.png')), // Hình ảnh hồ sơ
+                      child: const Image(image: AssetImage('assets/images/profile.jpg')), // Hình ảnh hồ sơ
                     ),
                   ),
                   Positioned(
@@ -52,6 +59,7 @@ class UpdateProfileScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: fullNameController,
                       decoration: InputDecoration(
                         label: const Text("Họ Tên"), // Văn bản nhãn
                         prefixIcon: const Icon(LineAwesomeIcons.user),
@@ -59,43 +67,52 @@ class UpdateProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20), // Kích thước cố định
                     TextFormField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         label: const Text("Email"), // Văn bản nhãn
                         prefixIcon: const Icon(LineAwesomeIcons.envelope_1),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        label: const Text("Số Điện Thoại"), // Văn bản nhãn
-                        prefixIcon: const Icon(LineAwesomeIcons.phone),
-                      ),
-                    ),
+                    // TextFormField(
+                    //   decoration: InputDecoration(
+                    //     label: const Text("Số Điện Thoại"), // Văn bản nhãn
+                    //     prefixIcon: const Icon(LineAwesomeIcons.phone),
+                    //   ),
+                    // ),
                     const SizedBox(height: 20),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        label: const Text("Mật Khẩu"), // Văn bản nhãn
-                        prefixIcon: const Icon(Icons.fingerprint),
-                        suffixIcon: IconButton(
-                          icon: const Icon(LineAwesomeIcons.eye_slash),
-                          onPressed: () {},
-                        ),
-                      ),
-                    ),
+
                     const SizedBox(height: 40),
 
                     // -- Form Submit Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => Get.to(() => const UpdateProfileScreen()),
+                        onPressed: () async {
+                          // Gọi hàm cập nhật thông tin người dùng
+                          await authController.updateUser(
+                            id: authController.user.value.id, // giữ nguyên id
+                            fullName: fullNameController.text,
+                            email: emailController.text);
+
+
+                          // Gọi hàm cập nhật thông tin người dùng
+                         // await authController.updateUser(id,f);
+
+                          // Kiểm tra nếu có lỗi thì hiển thị thông báo lỗi, ngược lại hiển thị thông báo thành công
+                          if (authController.error.value != null && authController.error.value!.isNotEmpty) {
+                            Get.snackbar('Lỗi', authController.error.value);
+                          } else {
+                            Get.snackbar('Thông báo', 'Cập nhật hồ sơ thành công!');
+                          }
+                        },
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           side: BorderSide.none,
                           shape: const StadiumBorder(),
                         ),
-                        child: const Text("Chỉnh Sửa Hồ Sơ", style: TextStyle(color: Colors.white)), // Văn bản nút
+                        child: const Text("Chỉnh Sửa Hồ Sơ", style: TextStyle(color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 40),

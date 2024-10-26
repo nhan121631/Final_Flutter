@@ -90,4 +90,31 @@ class AuthService {
     }
   }
 
+  Future<Map<String, dynamic>> updateUser({required int id, required String fullName, required String email}) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$remoteUrl/user?id=$id&fullName=$fullName&email=$email'),
+
+      );
+
+      if (response.statusCode == 200) {
+        // Nếu cập nhật thành công
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {
+          'success': false,
+          'message': 'Failed to update user',
+          'error': response.body,
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'An error occurred',
+        'error': e.toString(),
+      };
+    }
+  }
+
 }

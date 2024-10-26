@@ -1,9 +1,12 @@
+import 'package:badges/badges.dart' as badges;
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controller/controllers.dart';
+import '../../route/app_route.dart';
 import 'components/profile_menu_widget.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-
-import 'components/update_profile_screen.dart';
+import 'update_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -13,18 +16,64 @@ class ProfileScreen extends StatelessWidget {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => Get.back(), icon: const Icon(LineAwesomeIcons.angle_left), color: Colors.white,),
-        title: const Text("Hồ Sơ",style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)), // Văn bản tiêu đề
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {},
-        //     icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon),
-        //   ),
-        // ],
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(width: 48), // Ẩn nút leading
+            const Expanded(
+              child: Center(
+                child: Text(
+                  "Hồ Sơ",
+                  style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            ValueListenableBuilder<int>(
+              valueListenable: cartController.itemCart,
+              builder: (context, itemCount, child) {
+                return badges.Badge(
+                  badgeContent: Text(
+                    "$itemCount",
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  badgeStyle: BadgeStyle(
+                    badgeColor: Theme.of(context).cardColor,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      cartController.loadCart();
+                      Get.toNamed(AppRoute.cart);
+                    },
+                    child: Container(
+                      height: 46,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        color: Colors.orangeAccent,
+                        shape: BoxShape.circle,
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.6),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: const Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(16.0), // Padding trực tiếp
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               // -- IMAGE
@@ -35,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
                     height: 120,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: const Image(image: AssetImage('assets/images/profile.png')), // Hình ảnh hồ sơ
+                      child: const Image(image: AssetImage('assets/images/profile.jpg')),
                     ),
                   ),
                   Positioned(
@@ -58,21 +107,32 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              const Text("Chỉnh Sửa Hồ Sơ", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)), // Văn bản tiêu đề
-              const Text("Thông tin cá nhân của bạn.", style: TextStyle(fontSize: 16)), // Văn bản phụ
+
+              // Hiển thị tên người dùng từ profileController
+              Obx(() => Text(
+                authController.user.value.fullname,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              )),
+
+              // Hiển thị ID người dùng từ profileController
+              Obx(() => Text(
+                "Mã người dùng: @${authController.user.value.id}", // ID người dùng
+                style: const TextStyle(fontSize: 16),
+              )),
+
               const SizedBox(height: 20),
 
               // -- BUTTON
               SizedBox(
                 width: 200,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(() => const UpdateProfileScreen()),
+                  onPressed: () => Get.to(() => UpdateProfileScreen()),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.orangeAccent,
                     side: BorderSide.none,
                     shape: const StadiumBorder(),
                   ),
-                  child: const Text("Chỉnh Sửa Hồ Sơ", style: TextStyle(color: Colors.white)), // Văn bản nút
+                  child: const Text("Chỉnh Sửa Hồ Sơ", style: TextStyle(color: Colors.white)),
                 ),
               ),
               const SizedBox(height: 30),
@@ -97,20 +157,22 @@ class ProfileScreen extends StatelessWidget {
                     titleStyle: const TextStyle(fontSize: 20),
                     content: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 15.0),
-                      child: Text("Bạn có chắc chắn muốn đăng xuất không?"), // Văn bản xác nhận
+                      child: Text("Bạn có chắc chắn muốn đăng xuất không?"),
                     ),
                     confirm: Expanded(
                       child: ElevatedButton(
-                        // onPressed: () => AuthenticationRepository.instance.logout(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
                           side: BorderSide.none,
                         ),
-                        onPressed: () { },
-                        child: const Text("Có"), // Văn bản nút xác nhận
+                        onPressed: () {
+                          authController.logout();
+                          Get.toNamed(AppRoute.login);
+                        },
+                        child: const Text("Có"),
                       ),
                     ),
-                    cancel: OutlinedButton(onPressed: () => Get.back(), child: const Text("Không")), // Văn bản nút hủy
+                    cancel: OutlinedButton(onPressed: () => Get.back(), child: const Text("Không")),
                   );
                 },
               ),

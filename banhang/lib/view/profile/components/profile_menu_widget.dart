@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-const Color tPrimaryColor = Colors.black; // Màu chính icon
+const Color tPrimaryColor = Colors.blueAccent; // Màu chính icon
 const Color tAccentColor = Colors.black; // Màu nhấn text
 
 class ProfileMenuWidget extends StatelessWidget {
