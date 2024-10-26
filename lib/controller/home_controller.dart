@@ -1,6 +1,9 @@
+import 'package:banhang/controller/CartController.dart';
 import 'package:banhang/service/remote_service/remote_product_service.dart';
 import 'package:get/get.dart';
 import 'package:banhang/model/products_model.dart';
+
+import 'controllers.dart';
 
 class HomeController extends GetxController {
   static HomeController instance = Get.find();
@@ -21,6 +24,8 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+  //  cartController.getQuantity(authController.user.value.id);
+
     getproduct(); // Lấy danh sách sản phẩm
     getproductRecomend(); // Lấy sản phẩm gợi ý
     getitemcart(); // Lấy số lượng mặt hàng trong giỏ
@@ -35,6 +40,7 @@ class HomeController extends GetxController {
   void getproduct() async {
     try {
       isLoading(true); // Bắt đầu trạng thái tải
+
       var result = await RemoteProductService().get(); // Gọi dịch vụ để lấy sản phẩm
       if (result != null) {
         products.assignAll(result); // Cập nhật danh sách sản phẩm
@@ -51,10 +57,12 @@ class HomeController extends GetxController {
   Future<void> getproductRecomend() async {
     try {
       isLoadingPopular(true); // Bắt đầu trạng thái tải
+
       var result = await RemoteProductService().get(); // Gọi dịch vụ để lấy sản phẩm gợi ý
       print('Kết quả sản phẩm gợi ý: $result'); // Kiểm tra kết quả
       if (result != null && result.isNotEmpty) {
         productPobulars.assignAll(result); // Cập nhật danh sách sản phẩm gợi ý
+
       } else {
         print('Không tìm thấy sản phẩm phổ biến');
       }

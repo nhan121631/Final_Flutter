@@ -44,7 +44,7 @@ class AppPage {
 
     GetPage(
       name: AppRoute.orderform,
-      page: () => const OrderForm(),
+      page: () => OrderForm(total: Get.arguments?['totalAmount']),
     ),
 
   ];

@@ -50,6 +50,7 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {
       double sell = productSell.keys.first;
       int i = productSell.values.first;
+      print("i: ${i}");
       if (i < 0) {
         _total -= sell;
       } else {
@@ -82,6 +83,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isChecked = false;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -210,13 +212,50 @@ class _CartScreenState extends State<CartScreen> {
                     borderRadius: BorderRadius.circular(12.5),
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.toNamed(AppRoute.orderform);
+                        if (!isChecked) {
+                          isChecked = true;
+
+                          // Giả sử bạn có danh sách cartItems
+                          bool isQuantitySufficient = true; // Biến để kiểm tra tình trạng số lượng
+                          List<String> insufficientItems = []; // Danh sách lưu trữ sản phẩm không đủ
+
+                          for (var item in cartItems) {
+                            // Kiểm tra số lượng từng item
+                            if (item.quantity > item.product.quantity) {
+                              isQuantitySufficient = false; // Đánh dấu là không đủ số lượng
+                              // Thêm thông tin sản phẩm không đủ vào danh sách
+                              insufficientItems.add('${item.product.name} (Số lượng có sẵn: ${item.product.quantity})');
+                            }
+                          }
+
+                          // Nếu số lượng không đủ
+                          if (!isQuantitySufficient) {
+                            // Tạo thông báo với danh sách sản phẩm không đủ
+                            String insufficientMessage = insufficientItems.join(', ');
+                            Get.snackbar(
+                              "Thông báo",
+                              "Không đủ số lượng cho các sản phẩm: $insufficientMessage",
+                            );
+                          } else {
+                            // Nếu có sản phẩm và tổng khác 0
+                            if (_total != 0) {
+                              Get.toNamed(
+                                AppRoute.orderform,
+                                arguments: {'totalAmount': _total},
+                              );
+                            } else {
+                              Get.snackbar("Fail", "Không có giỏ hàng để thanh toán");
+                            }
+                          }
+                        }
                       },
+
+
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(MediaQuery.of(context).size.width, 60),
-                        backgroundColor: Colors.black,
+                        backgroundColor: Colors.orange,
                         elevation: 15,
-                        shadowColor: Colors.black,
+                        shadowColor: Colors.orange,
                       ),
                       child: const Text(
                         "Check Out",

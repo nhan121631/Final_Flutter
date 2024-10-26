@@ -11,10 +11,6 @@ class MainHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // You should ensure that CartController is initialized globally in your app
-    // Either in your main function or another appropriate place
-    // Get.put(CartController()); // Place this in the main() function of your app
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

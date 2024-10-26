@@ -17,6 +17,7 @@ class CartController extends GetxController {
   @override
   void onInit() {
     getQuantity(authController.user.value.id);
+    print(itemCart);
     super.onInit();
   }
 
@@ -40,7 +41,7 @@ class CartController extends GetxController {
     } catch (e) {
       print("Lỗi khi thêm sản phẩm vào giỏ hàng: $e");
     } finally {
-      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+      //await getQuantity(authController.user.value.id); // Cập nhật số lượng
       _isAddingToCart = false; // Tắt cờ sau khi hoàn thành
     }
   }

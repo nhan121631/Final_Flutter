@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:get/get.dart';
 
+import '../../controller/controllers.dart';
 import '../category/category_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -11,6 +12,7 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<DashboardController>(
       builder: (controller) => Scaffold(
         body: SafeArea(

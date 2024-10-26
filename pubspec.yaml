@@ -41,7 +41,7 @@ dependencies:
   shimmer: ^3.0.0
   carousel_slider: ^4.0.0
   email_validator: ^2.0.1
-  intl: ^0.18.1
+  intl: ^0.17.0
   flutter_html: 3.0.0-alpha.5
 
 

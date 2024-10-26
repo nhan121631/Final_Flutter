@@ -94,10 +94,16 @@ import 'package:banhang/model/cart_item_model.dart';
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: ()  async{
-                            await cartController.updateQuantityItem(widget.cartitem.id, 1);
-                            setState(()  {
+                          onTap: _isUpdating
+                              ? null // Vô hiệu hóa nút khi đang cập nhật
+                              : () async {
+                            setState(() {
+                              _isUpdating = true; // Đánh dấu là đang cập nhật
+                            });
+                              await cartController.updateQuantityItem(widget.cartitem.id, 1);
                               _updateQuantity(_qty + 1, 1);
+                            setState(() {
+                              _isUpdating = false; // Khôi phục trạng thái sau khi cập nhật
                             });
                           },
                           child: const ComponentButtonPlusMinus(icon: Icons.add),
