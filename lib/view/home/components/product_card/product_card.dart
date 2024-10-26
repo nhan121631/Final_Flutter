@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:banhang/model/products_model.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../utils/app_constants.dart';
 import '../../../product_details/productdetails_screen.dart';
@@ -15,6 +16,10 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String formatCurrency(double amount) {
+      final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+      return vnCurrency.format(amount);
+    }
     return GestureDetector(
         onTap: () {
           // Chuyển hướng đến màn hình chi tiết sản phẩm
@@ -57,7 +62,7 @@ class ProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Text(
-                '\$${product.sellPrice}',
+                '\$${formatCurrency(product.sellPrice)}',
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ],

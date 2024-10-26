@@ -52,5 +52,31 @@ class CartController extends GetxController {
     await cartController.getCartItem(authController.user.value.id);
     Get.toNamed(AppRoute.cart);
   }
+  Future<void> updateQuantityItem(int id, int state) async {
+    try {
+      await RemoteCartService().updateCartItem(id, state);
+    //  await getCartItem(authController.user.value.id);
+      print('Item đã được cập nhật');
+      // Thêm logic cập nhật lại giỏ hàng nếu cần
+    } catch (e) {
+      print('Lỗi khi cập nhật: $e');
+    }
+  }
+  Future<void> deleteCartItem(int id) async {
+    try {
+      await RemoteCartService().deleteCartItem(id);
+    //  await getCartItem(authController.user.value.id);
+      print('Item đã được xóa');
+      // Thêm logic cập nhật lại giỏ hàng nếu cần
+    } catch (e) {
+      print('Lỗi khi xóa item trong controller: $e');
+    }
+  }
+  var total = 0.0.obs; // Để lưu tổng giá trị
 
+  void updateTotal() {
+    total.value = cartitems.fold(0, (sum, item) {
+      return sum + item.product.sellPrice * item.quantity;
+    });
+  }
 }

@@ -2,6 +2,8 @@ import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+import '../../model/cart_item_model.dart';
 import 'components/cart_item_widget.dart';
 
 class CartScreen extends StatefulWidget {
@@ -12,38 +14,67 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  double _total = 0.0; // Biến để lưu tổng giá trị
+  List<CartItem> cartItems = []; // Danh sách giỏ hàng
+  double _total = 0.0;
+
+  // Format currency for display
   String formatCurrency(double amount) {
     final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
     return vnCurrency.format(amount);
   }
 
-  // Phương thức để tính tổng
+  // Calculate total cart price
   void _calculateTotal() {
     double total = 0.0;
-    for (var cartItem in cartController.cartitems) {
-      total += cartItem.product.sellPrice * cartItem.quantity; // Tính tổng
+    for (var cartItem in cartItems) {
+      total += cartItem.product.sellPrice * cartItem.quantity;
     }
     setState(() {
-      _total = total; // Cập nhật tổng
+      _total = total;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _calculateTotal(); // Tính tổng khi khởi tạo
+    cartItems = cartController.cartitems;
+    for(int i = 0; i<cartItems.length; i++){
+      print("Ban đầu: id: ${cartItems[i].id} qty ${cartItems[i].quantity} name ${cartItems[i].product.name}");
+    }
+    _calculateTotal();
   }
+
+  // Update total based on quantity change
   void _onQuantityChanged(Map<double, int> productSell) {
     setState(() {
-      double  sell= productSell.keys.first;
+      double sell = productSell.keys.first;
       int i = productSell.values.first;
-      if(i<0) {
+      if (i < 0) {
         _total -= sell;
-        print("i: ${i}, total: ${_total}");
-      }else{
+      } else {
         _total += sell;
-        print("i: ${i}, total: ${_total}");
+      }
+    });
+  }
+
+  // // Remove item from cart
+  // void _removeItemFromCart(int index) {
+  //   setState(() {
+  //     print("index ${index}");
+  //     cartController.cartitems.removeAt(index);
+  //   });
+  //  // _calculateTotal();
+  // }
+
+  // Hàm xóa item
+  void _onRemove(int itemId) {
+    setState(() {
+      print("id removw: ${itemId}");
+      final itemToRemove = cartItems.firstWhere((item) => item.id == itemId);
+      _total -= itemToRemove.quantity * itemToRemove.product.sellPrice;
+      cartItems.removeWhere((item) => item.id == itemId);
+      for(int i = 0; i<cartItems.length; i++){
+        print("id: ${cartItems[i].id} qty ${cartItems[i].quantity} name ${cartItems[i].product.name}");
       }
     });
   }
@@ -74,7 +105,10 @@ class _CartScreenState extends State<CartScreen> {
           ),
           centerTitle: true,
         ),
-        body: SafeArea(
+        body:
+        // Obx((){
+        // return
+          SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: SingleChildScrollView(
@@ -86,11 +120,12 @@ class _CartScreenState extends State<CartScreen> {
                     child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) {
                         return CartItemWidget(
-                          cartitem: cartController.cartitems[index],
+                          cartitem:cartItems[index],
                           onQuantityChanged: _onQuantityChanged,
+                          onRemove: _onRemove,
                         );
                       },
-                      itemCount: cartController.cartitems.length,
+                      itemCount: cartItems.length,
                       separatorBuilder: (BuildContext context, int index) {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -99,6 +134,7 @@ class _CartScreenState extends State<CartScreen> {
                       },
                     ),
                   ),
+                  // Promo code field and total price section
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 55,
@@ -158,7 +194,7 @@ class _CartScreenState extends State<CartScreen> {
                           ),
                           const Spacer(),
                           Text(
-                            "\$ ${formatCurrency(_total)}", // Hiển thị tổng giá trị
+                            "₫${formatCurrency(_total)}",
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -194,6 +230,7 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
         ),
+  //}),
       ),
     );
   }
