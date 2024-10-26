@@ -1,5 +1,6 @@
 import 'package:banhang/controller/dashboard_controller.dart';
 import 'package:banhang/view/home/home_screen.dart';
+import 'package:banhang/view/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:get/get.dart';
@@ -22,9 +23,7 @@ class DashboardScreen extends StatelessWidget {
               Container(
                 color: Colors.blue,
               ),
-              Container(
-                color: Colors.orange,
-              )
+              const ProfileScreen(),
             ],
           ),
         ),

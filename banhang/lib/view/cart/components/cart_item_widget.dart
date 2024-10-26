@@ -1,3 +1,4 @@
+import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/model/cart_item_model.dart';
 import 'package:banhang/utils/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +7,14 @@ import 'package:intl/intl.dart';
 class CartItemWidget extends StatefulWidget {
   final CartItem cartitem;
   final ValueChanged<Map<double, int>> onQuantityChanged; // Callback function
+  final ValueChanged<int> onRemove; // Callback function để xóa phần tử
 
   const CartItemWidget({
     super.key,
     required this.cartitem,
-    required this.onQuantityChanged, // Thêm đối số này
+    required this.onQuantityChanged,
+    required this.onRemove, // Truyền callback xóa
+
   });
 
   @override
@@ -20,15 +24,27 @@ class CartItemWidget extends StatefulWidget {
 class _CartItemWidgetState extends State<CartItemWidget> {
   late int _qty;
   late double _sell;
+  bool _isUpdating = false; // Biến để kiểm soát trạng thái cập nhật
 
   String formatCurrency(double amount) {
     final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
     return vnCurrency.format(amount);
   }
   @override
+  void didUpdateWidget(CartItemWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.cartitem != widget.cartitem) {
+      setState(() {
+        _qty = widget.cartitem.quantity; // Cập nhật số lượng
+        _sell = _qty * widget.cartitem.product.sellPrice; // Cập nhật lại tổng giá
+      });
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
-    _qty = widget.cartitem.quantity; // Khởi tạo số lượng từ cart item
+    _qty = widget.cartitem.quantity; // Khởi tạo số lượng từ cartitem
     _sell = widget.cartitem.product.sellPrice * _qty; // Tính tổng giá ban đầu
   }
   void _updateQuantity(int newQty, int i) {
@@ -65,9 +81,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 Text(
                   '${widget.cartitem.product.name}',
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF606060),
+                    color: Colors.orange,
                   ),
                 ),
                 const Spacer(flex: 1),
@@ -78,8 +94,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          setState(() {
+                        onTap: ()  async{
+                          await cartController.updateQuantityItem(widget.cartitem.id, 1);
+                          setState(()  {
                             _updateQuantity(_qty + 1, 1);
                           });
                         },
@@ -93,11 +110,19 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
+                        onTap: _isUpdating
+                            ? null // Vô hiệu hóa nút khi đang cập nhật
+                            : () async {
                           setState(() {
-                            if (_qty > 1) {
-                              _updateQuantity(_qty - 1, -1);
-                            }
+                            _isUpdating = true; // Đánh dấu là đang cập nhật
+                          });
+                          if (_qty > 1) {
+                            await cartController.updateQuantityItem(widget.cartitem.id, -1);
+                            _updateQuantity(_qty - 1, -1);
+
+                          }
+                          setState(() {
+                            _isUpdating = false; // Khôi phục trạng thái sau khi cập nhật
                           });
                         },
                         child: const ComponentButtonPlusMinus(icon: Icons.remove),
@@ -113,8 +138,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: () {
-                  // Xử lý hành động xóa ở đây
+                onTap: () async {
+                  print("remove");
+                  widget.onRemove(widget.cartitem.id);
+                  await cartController.deleteCartItem(widget.cartitem.id);
                 },
                 child: const Icon(
                   Icons.cancel,

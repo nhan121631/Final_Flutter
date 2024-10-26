@@ -65,15 +65,50 @@ class RemoteCartService {
       // Kiểm tra mã trạng thái
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body) as List;
-        return jsonResponse.map((cartItem) => CartItem.fromJson(cartItem)).toList(); // Chuyển đổi nội dung phản hồi thành int
+        return jsonResponse.map((cartitem) => CartItem.fromJson(cartitem)).toList();
       } else {
         // Nếu không thành công, ném ra một ngoại lệ
-        throw Exception('Failed to get cart');
+        throw Exception('Failed to get cartItem');
       }
     } catch (e) {
       // Xử lý lỗi nếu có
       print('Error: $e');
       return [];
+    }
+  }
+  Future<void> deleteCartItem(int id) async {
+    try {
+      var response = await client.delete(
+        Uri.parse('$remoteUrl/delete/item?id=$id'),
+      );
+
+      // Kiểm tra mã trạng thái
+      if (response.statusCode == 200) {
+        print('Đã xóa Item ra khỏi giỏ hàng');
+      } else {
+        throw Exception('Failed to delete cart item');
+      }
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Error: $e');
+    }
+  }
+
+  Future<void> updateCartItem(int id, int state) async {
+    try {
+      var response = await client.put(
+        Uri.parse('$remoteUrl/quantity?id=$id&state=$state'),
+      );
+
+      // Kiểm tra mã trạng thái
+      if (response.statusCode == 200) {
+        print('Đã update quantity');
+      } else {
+        throw Exception('Failed to update quantity cart item');
+      }
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Error: $e');
     }
   }
 }

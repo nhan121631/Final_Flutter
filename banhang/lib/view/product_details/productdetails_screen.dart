@@ -1,52 +1,75 @@
 import 'package:banhang/model/products_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../controller/controllers.dart';
 import '../../utils/app_constants.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
-  const ProductDetailsScreen({Key? key, required this.product})
-      : super(key: key);
+  const ProductDetailsScreen({Key? key, required this.product}) : super(key: key);
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
   NumberFormat formatter = NumberFormat('00');
   int _qty = 1;
-  int _tagIndex = 0;
+  bool isaddCarted = false;
 
-  void _addToCart() {
-    // Giả sử có một CartController hoặc tương tự để xử lý thêm sản phẩm vào giỏ hàng
-    // CartController().addToCart(widget.product, _qty);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${widget.product.name} đã được thêm vào giỏ hàng')),
-    );
+  Future<void> _addToCart() async {
+    if (!isaddCarted) {
+      isaddCarted = true;
+      for (int i = 0; i < _qty; i++) {
+        await cartController.addCart(widget.product.id, authController.user.value.id);
+      }
+
+      Get.snackbar("Success", '${widget.product.name} đã được thêm vào giỏ hàng');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.product.name), // Tiêu đề của trang
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // Biểu tượng quay lại
+          onPressed: () {
+            Navigator.pop(context); // Quay lại trang trước
+          },
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 10),
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc của hình ảnh
-                child: Image.network(
-                  '$baseUrl/image/${widget.product.thumbnail}',
-                  fit: BoxFit.cover,
+                child: Center(
+                  child: SizedBox(
+                    width: 360, // Chiều rộng cố định
+                    height: 250, // Chiều cao cố định
+                    child: Image.network(
+                      '$baseUrl/image/${widget.product.thumbnail}',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -62,7 +85,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                '\$${widget.product.sellPrice.toStringAsFixed(2)}',
+                '\₫${formatCurrency(widget.product.sellPrice)}',
                 style: TextStyle(
                   fontSize: 18,
                   color: Theme.of(context).primaryColor,
@@ -77,7 +100,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 children: [
                   _buildQuantitySelector(),
                   const SizedBox(width: 10),
-                  _buildTagSelector(),
                 ],
               ),
             ),
@@ -142,6 +164,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               if (_qty > 1) {
                 setState(() {
                   _qty--;
+                  isaddCarted = false;
                 });
               }
             },
@@ -159,6 +182,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             onTap: () {
               setState(() {
                 _qty++;
+                isaddCarted = false;
               });
             },
             child: Icon(
@@ -167,51 +191,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               color: Colors.grey.shade800,
             ),
           )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTagSelector() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(width: 1),
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Row(
-        children: [
-          InkWell(
-            onTap: () {
-              if (_tagIndex > 0) {
-                setState(() {
-                  _tagIndex--;
-                });
-              }
-            },
-            child: Icon(
-              Icons.keyboard_arrow_left_sharp,
-              size: 32,
-              color: Colors.grey.shade800,
-            ),
-          ),
-          Text(
-            widget.product.name,
-            style: TextStyle(fontSize: 18, color: Colors.grey.shade800),
-          ),
-          // InkWell(
-          //   onTap: () {
-          //     if (_tagIndex != (widget.product.tags.length - 1)) {
-          //       setState(() {
-          //         _tagIndex++;
-          //       });
-          //     }
-          //   },
-          //   child: Icon(
-          //     Icons.keyboard_arrow_right_sharp,
-          //     size: 32,
-          //     color: Colors.grey.shade800,
-          //   ),
-          // )
         ],
       ),
     );
