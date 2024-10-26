@@ -1,4 +1,5 @@
 import 'package:banhang/view/dashboard/dashboard_binding.dart';
+import 'package:banhang/view/order/formorder/form.dart';
 import 'package:get/get.dart';
 import 'package:banhang/route/app_route.dart';
 import 'package:banhang/view/dashboard/dashboard_screen.dart';
@@ -39,6 +40,11 @@ class AppPage {
     GetPage(
       name: AppRoute.cart,
       page: () => const CartScreen(),
+    ),
+
+    GetPage(
+      name: AppRoute.orderform,
+      page: () => const OrderForm(),
     ),
 
   ];

@@ -81,9 +81,9 @@ import 'package:banhang/model/cart_item_model.dart';
                   Text(
                     '${widget.cartitem.product.name}',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF606060),
+                      color: Colors.orange,
                     ),
                   ),
                   const Spacer(flex: 1),

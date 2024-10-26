@@ -17,15 +17,19 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
   NumberFormat formatter = NumberFormat('00');
   int _qty = 1;
   bool isaddCarted = false;
 
-  void _addToCart() {
+  Future<void> _addToCart() async {
     if (!isaddCarted) {
       isaddCarted = true;
       for (int i = 0; i < _qty; i++) {
-        CartController().addCart(widget.product.id, authController.user.value.id);
+        await cartController.addCart(widget.product.id, authController.user.value.id);
       }
 
       Get.snackbar("Success", '${widget.product.name} đã được thêm vào giỏ hàng');
@@ -82,7 +86,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                '\$${widget.product.sellPrice.toStringAsFixed(2)}',
+                '\₫${formatCurrency(widget.product.sellPrice)}',
                 style: TextStyle(
                   fontSize: 18,
                   color: Theme.of(context).primaryColor,

@@ -8,6 +8,7 @@ import '../route/app_route.dart';
 
 class CartController extends GetxController {
   static CartController instance = Get.find();
+  bool _isAddingToCart = false; // Cờ để kiểm soát việc thêm vào giỏ hàng
 
   // RxInt itemCart = 0.obs;
   ValueNotifier<int> itemCart = ValueNotifier<int>(0);
@@ -19,10 +20,31 @@ class CartController extends GetxController {
     super.onInit();
   }
 
-  void addCart(int idProduct, int idUser) async {
-    await RemoteCartService().addCart(idProduct, idUser);
-    await getQuantity(authController.user.value.id); // Gọi lại getQuantity để cập nhật số lượng
+  // void addCart(int idProduct, int idUser) async {
+  //   await RemoteCartService().addCart(idProduct, idUser);
+  //   await getQuantity(authController.user.value.id); // Gọi lại getQuantity để cập nhật số lượng
+  // }
+
+  Future<void> addCart(int idProduct, int idUser) async {
+
+    // Ngăn không cho gọi hàm nhiều lần
+    if (_isAddingToCart) {
+      print("Đang thêm sản phẩm vào giỏ hàng, vui lòng chờ...");
+      return;
+    }
+    _isAddingToCart = true; // Bật cờ khi bắt đầu thêm sản phẩm
+    try {
+      await RemoteCartService().addCart(idProduct, idUser); // Thực hiện thêm sản phẩm vào giỏ
+      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+      print("Sản phẩm đã được thêm vào giỏ hàng.");
+    } catch (e) {
+      print("Lỗi khi thêm sản phẩm vào giỏ hàng: $e");
+    } finally {
+      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+      _isAddingToCart = false; // Tắt cờ sau khi hoàn thành
+    }
   }
+
 
   Future<void> getQuantity(int userId) async {
     try {
@@ -55,7 +77,8 @@ class CartController extends GetxController {
   Future<void> updateQuantityItem(int id, int state) async {
     try {
       await RemoteCartService().updateCartItem(id, state);
-    //  await getCartItem(authController.user.value.id);
+      await getCartItem(authController.user.value.id);
+      await getQuantity(authController.user.value.id); // Cập nhật số lượng
       print('Item đã được cập nhật');
       // Thêm logic cập nhật lại giỏ hàng nếu cần
     } catch (e) {
@@ -65,7 +88,9 @@ class CartController extends GetxController {
   Future<void> deleteCartItem(int id) async {
     try {
       await RemoteCartService().deleteCartItem(id);
-    //  await getCartItem(authController.user.value.id);
+      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+
+      //  await getCartItem(authController.user.value.id);
       print('Item đã được xóa');
       // Thêm logic cập nhật lại giỏ hàng nếu cần
     } catch (e) {

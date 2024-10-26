@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OrderForm extends StatefulWidget {
+  const OrderForm({super.key});
+
   @override
   _OrderFormState createState() => _OrderFormState();
 }

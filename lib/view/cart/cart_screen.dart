@@ -1,4 +1,5 @@
 import 'package:banhang/controller/controllers.dart';
+import 'package:banhang/route/app_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -208,7 +209,9 @@ class _CartScreenState extends State<CartScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12.5),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(AppRoute.orderform);
+                      },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(MediaQuery.of(context).size.width, 60),
                         backgroundColor: Colors.black,

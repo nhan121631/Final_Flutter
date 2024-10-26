@@ -62,7 +62,7 @@ class ProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Text(
-                '\$${formatCurrency(product.sellPrice)}',
+                '\₫${formatCurrency(product.sellPrice)}',
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ],
@@ -74,8 +74,8 @@ class ProductCard extends StatelessWidget {
               onPrimary: Colors.white,
             ),
             onPressed: () async {
-              final CartController cartController = Get.find<CartController>(); // Lấy instance từ GetX
-              CartController().addCart(product.id, authController.user.value.id);
+              //final CartController cartController = Get.find<CartController>(); // Lấy instance từ GetX
+              await cartController.addCart(product.id, authController.user.value.id);
                cartController.update();
                 _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
