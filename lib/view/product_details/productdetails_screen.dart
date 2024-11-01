@@ -21,6 +21,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
     return vnCurrency.format(amount);
   }
+
   NumberFormat formatter = NumberFormat('00');
   int _qty = 1;
   bool isaddCarted = false;
@@ -49,87 +50,104 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc của hình ảnh
-                child: Center(
-                  child: SizedBox(
-                    width: 360, // Chiều rộng cố định
-                    height: 250, // Chiều cao cố định
-                    child: Image.network(
-                      '$baseUrl/image/${widget.product.thumbnail}',
-                      fit: BoxFit.cover,
+        child: SingleChildScrollView( // Thêm SingleChildScrollView ở đây
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc của hình ảnh
+                  child: Center(
+                    child: SizedBox(
+                      width: 360, // Chiều rộng cố định
+                      height: 250, // Chiều cao cố định
+                      child: Image.network(
+                        '$baseUrl/image/${widget.product.thumbnail}',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                widget.product.name,
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                '\₫${formatCurrency(widget.product.sellPrice)}',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  _buildQuantitySelector(),
-                  const SizedBox(width: 10),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'About this product:',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Html(
-                data: widget.product.description, // Dữ liệu mô tả HTML
-                style: {
-                  // Bạn có thể tùy chỉnh kiểu dáng cho HTML nếu cần
-                  "body": Style(
-                    fontSize: const FontSize(20),
-                    color: Colors.grey.shade700,
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  widget.product.name,
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w600,
                   ),
-                },
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  '\₫${formatCurrency(widget.product.sellPrice)}',
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'Số lượng: ${widget.product.quantity}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    _buildQuantitySelector(),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Phần mô tả với Scroll
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'About this product:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: SingleChildScrollView( // Thêm thanh cuộn cho mô tả
+                  child: Html(
+                    data: widget.product.description, // Dữ liệu mô tả HTML
+                    style: {
+                      // Bạn có thể tùy chỉnh kiểu dáng cho HTML nếu cần
+                      "body": Style(
+                        fontSize: const FontSize(20),
+                        color: Colors.grey.shade700,
+                      ),
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(

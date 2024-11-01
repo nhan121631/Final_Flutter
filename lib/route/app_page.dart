@@ -9,6 +9,7 @@ import '../view/auth/register/RegisterScreen.dart';
 import '../view/auth/login/AcceptScreen.dart';
 import '../view/auth/login/FogotPasswordScreen.dart';
 import '../view/cart/cart_screen.dart';
+import '../view/product_details/productdetails_screen.dart';
 
 class AppPage {
   static var list = [
@@ -21,6 +22,7 @@ class AppPage {
       name: AppRoute.login,
       page: () => const LoginScreen(),
     ),
+
     GetPage(
       name: AppRoute.register,
       page: () => const RegisterScreen(),
@@ -40,11 +42,19 @@ class AppPage {
     GetPage(
       name: AppRoute.cart,
       page: () => const CartScreen(),
+      transition: Transition.native,
     ),
 
     GetPage(
       name: AppRoute.orderform,
       page: () => OrderForm(total: Get.arguments?['totalAmount']),
+      transition: Transition.fadeIn,
+    ),
+
+    GetPage(
+      name: AppRoute.details,
+      page: () => ProductDetailsScreen(product: Get.arguments?['product']),
+      transition: Transition.fadeIn,
     ),
 
   ];

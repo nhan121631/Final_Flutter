@@ -1,5 +1,6 @@
 import 'package:banhang/controller/CartController.dart';
 import 'package:banhang/controller/controllers.dart';
+import 'package:banhang/route/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:banhang/model/products_model.dart';
 import 'package:get/get.dart';
@@ -22,13 +23,14 @@ class ProductCard extends StatelessWidget {
     }
     return GestureDetector(
         onTap: () {
-          // Chuyển hướng đến màn hình chi tiết sản phẩm
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProductDetailsScreen(product: product),
-            ),
-          );
+          // // Chuyển hướng đến màn hình chi tiết sản phẩm
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => ProductDetailsScreen(product: product),
+          //   ),
+          // );
+          Get.toNamed(AppRoute.details, arguments: {'product': product});
         },
      child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),

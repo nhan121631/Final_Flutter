@@ -6,6 +6,8 @@ class AppRoute {
   static const String acceptcode = "/fogotpass/acceptcode";
   static const String cart = "/cart";
   static const String orderform = "/orderform";
+  static const String details = "/details";
+
 
 
 }

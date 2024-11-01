@@ -45,5 +45,25 @@ class RemoteProductService {
       return [];
     }
   }
-
+  // Product filter
+  Future<List<Product>> getFilter(double sell1, double sell2) async {
+    try {
+      var response = await client.get(Uri.parse('${remoteUrl}/getfilter?sell1=$sell1&sell2=$sell2'));
+      // Kiểm tra mã trạng thái
+      if (response.statusCode == 200) {
+        // Nếu thành công, chuyển đổi JSON thành danh sách Product
+        var jsonResponse = json.decode(response.body) as List;
+        return jsonResponse
+            .map((product) => Product.fromJson(product))
+            .toList();
+      } else {
+        // Nếu không thành công, ném ra một ngoại lệ
+        throw Exception('Failed to load products filter');
+      }
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Error: $e');
+      return [];
+    }
+  }
 }

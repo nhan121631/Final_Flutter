@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import '../../controller/controllers.dart';
 import '../category/category_screen.dart';
+import '../order/order_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -21,9 +22,7 @@ class DashboardScreen extends StatelessWidget {
             children: [
               const HomeScreen(),
               const CategoryScreen(),
-              Container(
-                color: Colors.blue,
-              ),
+                OrderScreen(),
               Container(
                 color: Colors.orange,
               )
@@ -57,7 +56,7 @@ class DashboardScreen extends StatelessWidget {
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.category), label: 'Category'),
-              BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
+              BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Order'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle), label: 'Account')
             ],

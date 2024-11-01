@@ -3,12 +3,14 @@ import 'package:banhang/controller/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:get/get.dart';
-
-import '../route/app_route.dart';
+import 'package:intl/intl.dart';
 
 class MainHeader extends StatelessWidget {
   const MainHeader({Key? key}) : super(key: key);
-
+  String formatCurrency(double amount) {
+    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+    return vnCurrency.format(amount);
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,7 +65,31 @@ class MainHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-
+          GestureDetector(
+            onTap: () {
+              _showFilterDialog(context);
+            },
+            child: Container(
+              height: 46,
+              width: 46,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.6),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(12),
+              child: const Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
           ValueListenableBuilder<int>(
             valueListenable: cartController.itemCart,
             builder: (context, itemCount, child) {
@@ -73,7 +99,9 @@ class MainHeader extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                 ),
                 badgeStyle: BadgeStyle(
-                  badgeColor: Theme.of(context).primaryColor,
+                  badgeColor: Theme
+                      .of(context)
+                      .primaryColor,
                 ),
                 child: GestureDetector(
                   onTap: () {
@@ -105,6 +133,100 @@ class MainHeader extends StatelessWidget {
           const SizedBox(width: 5),
         ],
       ),
+    );
+  }
+
+  void _showFilterDialog(BuildContext context) {
+    double minPrice = 0.0; // Giá trị khởi tạo cứng
+    double maxPrice = 500000.0; // Giá trị khởi tạo cứng
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Lọc theo giá"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Giá thấp nhất: ${formatCurrency(minPrice)}",
+                    style: TextStyle(color: Colors.orange), // Đặt màu chữ thành cam
+                  ),
+                  Slider(
+                    value: minPrice,
+                    min: 0,
+                    max: 10000000,
+                    divisions: 80,
+                    label: minPrice.round().toString(),
+                    activeColor: Colors.orange, // Đặt màu cho thanh trượt khi hoạt động
+                    onChanged: (value) {
+                      setState(() {
+                        minPrice = value;
+                        if (minPrice > maxPrice) {
+                          maxPrice = minPrice; // Đảm bảo giá trị min không vượt quá max
+                        }
+                      });
+                    },
+                  ),
+                  Text(
+                    "Giá cao nhất: ${formatCurrency(maxPrice)}",
+                    style: TextStyle(color: Colors.orange), // Đặt màu chữ thành cam
+                  ),
+                  Slider(
+                    value: maxPrice,
+                    min: minPrice, // Đảm bảo giá trị min không lớn hơn max
+                    max: 10000000,
+                    divisions: 80,
+                    label: maxPrice.round().toString(),
+                    activeColor: Colors.orange, // Đặt màu cho thanh trượt khi hoạt động
+                    onChanged: (value) {
+                      setState(() {
+                        maxPrice = value;
+                      });
+                    },
+                  ),
+
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    homeController.getproductRecomend();
+                    Navigator.of(context).pop(); // Đóng dialog
+                  },
+                  child: const Text(
+                    "Tắt lọc",
+                    style: TextStyle(color: Colors.grey, fontSize: 20),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Đóng dialog
+                  },
+                  child: const Text("Hủy",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20
+                  ),),
+                ),
+                TextButton(
+                  onPressed: () {
+                    homeController.getProductFilter(minPrice, maxPrice);
+                    Navigator.of(context).pop(); // Đóng dialog
+                  },
+                  child: const Text("Lọc",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 20
+                  ),),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

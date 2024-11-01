@@ -19,8 +19,8 @@ class HomeScreen extends StatelessWidget {
         children: [
           const MainHeader(),
           Obx(() {
-            if (homeController.products.isNotEmpty) {
-              return CarouselSliderView(products: homeController.products);
+            if (homeController.productPobulars.isNotEmpty) {
+              return CarouselSliderView(/*products: homeController.products*/);
             } else {
               return CarouselLoading();
             }
@@ -30,6 +30,17 @@ class HomeScreen extends StatelessWidget {
           ),
         Obx(() {
           if (!homeController.isSearch.value) {
+            if(homeController.isFilter.value) {
+              print("Loc: ${homeController.isFilter.value}");
+
+              return const Text(
+                "Sản phẩm lọc theo giá",
+                style: TextStyle(color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
+              );
+            }
+
             if(homeController.isPopular.value) {
               return const Text(
                 "Sản phẩm bán chạy",
