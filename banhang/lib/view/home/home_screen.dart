@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/view/home/components/carousel_slider/carousel_loading.dart';
 import 'package:banhang/view/home/components/carousel_slider/carusel_slider_view.dart';
-import 'package:banhang/view/home/components/product_card/product_loading.dart';
+import 'package:intl/intl.dart';
 
 import 'components/product_card/product_card.dart';
 class HomeScreen extends StatelessWidget {
@@ -13,13 +13,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Column(
         children: [
           const MainHeader(),
           Obx(() {
-            if (homeController.products.isNotEmpty) {
-              return CarouselSliderView(products: homeController.products);
+            if (homeController.productPobulars.isNotEmpty) {
+              return CarouselSliderView(/*products: homeController.products*/);
             } else {
               return CarouselLoading();
             }
@@ -29,6 +30,17 @@ class HomeScreen extends StatelessWidget {
           ),
         Obx(() {
           if (!homeController.isSearch.value) {
+            if(homeController.isFilter.value) {
+              print("Loc: ${homeController.isFilter.value}");
+
+              return const Text(
+                "Sản phẩm lọc theo giá",
+                style: TextStyle(color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
+              );
+            }
+
             if(homeController.isPopular.value) {
               return const Text(
                 "Sản phẩm bán chạy",

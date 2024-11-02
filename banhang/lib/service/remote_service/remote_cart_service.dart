@@ -64,7 +64,7 @@ class RemoteCartService {
 
       // Kiểm tra mã trạng thái
       if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body) as List;
+          var jsonResponse = json.decode(response.body) as List;
         return jsonResponse.map((cartitem) => CartItem.fromJson(cartitem)).toList();
       } else {
         // Nếu không thành công, ném ra một ngoại lệ
@@ -111,4 +111,5 @@ class RemoteCartService {
       print('Error: $e');
     }
   }
+
 }

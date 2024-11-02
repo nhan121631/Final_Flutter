@@ -1,17 +1,20 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-
+import '../../../controller/auth_controller.dart'; // Thêm dòng này để import AuthController
 import '../../../route/app_route.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+  ForgotPasswordScreen({super.key});
+
+  final TextEditingController emailController = TextEditingController(); // Thêm controller để lấy email
 
   @override
   Widget build(BuildContext context) {
+    bool isTapped=false;
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/images/register.png'), fit: BoxFit.cover),
+            image: AssetImage('assets/images/register.jpg'), fit: BoxFit.cover),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -19,7 +22,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(left: 35, top: 80),
             child: const Text(
-              "Fogot\nPassword",
+              "Forgot\nPassword",
               style: TextStyle(color: Colors.white, fontSize: 33, fontWeight: FontWeight.w500),
             ),
           ),
@@ -34,11 +37,12 @@ class ForgotPasswordScreen extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(left: 5, bottom: 6),
                   child: const Text(
-                    "Enter your mail:",
+                    "Enter your email:",
                     style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
                 TextField(
+                  controller: emailController, // Gán controller vào TextField
                   decoration: InputDecoration(
                     fillColor: Colors.grey.shade100,
                     filled: true,
@@ -67,8 +71,30 @@ class ForgotPasswordScreen extends StatelessWidget {
                       backgroundColor: const Color(0xff4c505b),
                       child: IconButton(
                         color: Colors.white,
-                        onPressed: () {
-                          Get.toNamed(AppRoute.acceptcode);
+                        onPressed: () async {
+                        if(!isTapped) {
+                          isTapped = true;
+                          final email = emailController.text;
+                          if (email.isNotEmpty) {
+                            await AuthController.instance.forgotPassword(email);
+
+                            if (AuthController.instance.isForgot.value) {
+                              Get.snackbar('Receive Code Failed',
+                                'Verification code sent successfully',
+                                duration: const Duration(seconds: 3),);
+                              Get.toNamed('${AppRoute.forgotpass}${AppRoute
+                                  .acceptcode}');
+                              print("success");
+                            } else {
+                              Get.snackbar(
+                                'Receiving code failed', 'Invalid Email',
+                                duration: const Duration(seconds: 2),);
+                            }
+                          } else {
+                            Get.snackbar("Error",
+                                "Please enter your email"); // Thông báo lỗi nếu email rỗng
+                          }
+                        }
                         },
                         icon: const Icon(Icons.arrow_forward),
                       ),
@@ -83,7 +109,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                     children: [
                       TextButton(
                         onPressed: () {
-                          // Navigator.pushNamed(context, 'register');
                           Get.toNamed(AppRoute.login);
                         },
                         child: const Text(

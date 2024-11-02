@@ -48,7 +48,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? validatePassword(String value) {
     if (value.isEmpty) return 'Password không được rỗng';
-    if (value.length < 8) return 'Password phải dài hơn 8 ký tự';
+    //if (value.length < 8) return 'Password phải dài hơn 8 ký tự';
+    RegExp regex = RegExp(r'^(?=.*?[!@#$%^&*()_+\-=\[\]{};":\\|,.<>\/?]).{8,}$');
+    if (!regex.hasMatch(value)) {
+      return "Mật khẩu phải có ít nhất 8 ký tự và 1 ký tự đặc biệt";
+
+    }
     return null;
   }
 
@@ -213,7 +218,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Xử lý quên mật khẩu ở đây
+                        Get.toNamed(AppRoute.forgotpass);
                       },
                       child: const Text(
                         'Forgot Password?',

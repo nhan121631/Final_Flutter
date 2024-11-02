@@ -90,6 +90,73 @@ class AuthService {
     }
   }
 
+  // forgot pass
+  Future<Map<String, dynamic>> forgotPassword(String email) async {
+    try {
+      var response = await client.post(
+        Uri.parse('$remoteUrl/forgot-password'),
+        body: {
+          'email': email,
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        if (data['success']) {
+          print('Mã đặt lại mật khẩu đã gửi đến email: $email');
+          return {
+            'success': true,
+            'message': data['message'],
+          };
+        } else {
+          throw Exception(data['message']);
+        }
+      } else {
+        throw Exception('Failed to request password reset');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+
+  // ResetpassWord
+  Future<Map<String, dynamic>> resetPassword(String email, String resetCode, String newPassword) async {
+    try {
+      var response = await client.post(
+        Uri.parse('$remoteUrl/reset-password'),
+        body: {
+          'email': email,
+          'resetCode': resetCode,
+          'newPassword': newPassword,
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        if (data['success']) {
+          print('Đổi pass thành công cho email: $email');
+          return {
+            'success': true,
+            'message': data['message'],
+          };
+        } else {
+          throw Exception(data['message']);
+        }
+      } else {
+        throw Exception('Failed to request password reset');
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+
   Future<Map<String, dynamic>> updateUser({required int id, required String fullName, required String email}) async {
     try {
       final response = await http.put(

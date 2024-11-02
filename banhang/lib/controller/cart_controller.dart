@@ -45,7 +45,6 @@ class CartController extends GetxController {
     }
   }
 
-
   Future<void> getQuantity(int userId) async {
     try {
       int quantity = await RemoteCartService().getQuantity(userId);

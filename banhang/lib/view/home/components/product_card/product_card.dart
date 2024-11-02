@@ -1,6 +1,10 @@
+import 'package:banhang/controller/cart_controller.dart';
 import 'package:banhang/controller/controllers.dart';
+import 'package:banhang/route/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:banhang/model/products_model.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../utils/app_constants.dart';
@@ -11,22 +15,22 @@ class ProductCard extends StatelessWidget {
 
   ProductCard({required this.product});
 
-  String formatCurrency(double amount) {
-    final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
-    return vnCurrency.format(amount);
-  }
-
   @override
   Widget build(BuildContext context) {
+    String formatCurrency(double amount) {
+      final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
+      return vnCurrency.format(amount);
+    }
     return GestureDetector(
         onTap: () {
-          // Chuyển hướng đến màn hình chi tiết sản phẩm
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProductDetailsScreen(product: product),
-            ),
-          );
+          // // Chuyển hướng đến màn hình chi tiết sản phẩm
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => ProductDetailsScreen(product: product),
+          //   ),
+          // );
+          Get.toNamed(AppRoute.details, arguments: {'product': product});
         },
      child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -36,6 +40,7 @@ class ProductCard extends StatelessWidget {
         border: Border.all(color: Colors.grey.withOpacity(.3), width: .2),
       ),
       child: Row(
+
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(width: 10),
@@ -70,8 +75,10 @@ class ProductCard extends StatelessWidget {
               foregroundColor: Colors.white, backgroundColor: Colors.orange.shade500,
             ),
             onPressed: () async {
-              cartController.addCart(product.id, authController.user.value.id);
-              _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
+              //final CartController cartController = Get.find<CartController>(); // Lấy instance từ GetX
+              await cartController.addCart(product.id, authController.user.value.id);
+               cartController.update();
+                _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
             icon: const Icon(Icons.add, size: 18),
             label: const Text("Add to Cart"),

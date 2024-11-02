@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:banhang/route/app_route.dart';
 import 'package:banhang/view/dashboard/dashboard_screen.dart';
 
-import '../view/auth/login/accept_code_screen.dart';
+import '../view/auth/login/accept_screen.dart';
 import '../view/auth/login/fogot_password_screen.dart';
 import '../view/auth/login/login_sceen.dart';
 import '../view/auth/register/register_screen.dart';
+import '../view/order/formorder/form.dart';
+import '../view/product_details/productdetails_screen.dart';
 
 class AppPage {
   static var list = [
@@ -26,11 +28,11 @@ class AppPage {
     ),
     GetPage(
       name: AppRoute.forgotpass,
-      page: () => const ForgotPasswordScreen(),
+      page: () => ForgotPasswordScreen(),
       children: [
         GetPage(
           name: AppRoute.acceptcode,
-          page: () => const AcceptCodeScreen(),
+          page: () => AcceptCodeScreen(),
         ),
       ],
     ),
@@ -39,6 +41,19 @@ class AppPage {
       name: AppRoute.cart,
       page: () => const CartScreen(),
     ),
+
+    GetPage(
+      name: AppRoute.orderform,
+      page: () => OrderForm(total: Get.arguments?['totalAmount']),
+      transition: Transition.fadeIn,
+    ),
+
+    GetPage(
+      name: AppRoute.details,
+      page: () => ProductDetailsScreen(product: Get.arguments?['product']),
+      transition: Transition.fadeIn,
+    ),
+
   ];
 
 }
