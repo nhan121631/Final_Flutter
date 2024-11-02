@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ChatService {
-  final String apiKey = "AIzaSyDENJUTJqICeUcoSSg49tZvlAbq-t86qwg";
+  final String apiKey = "Your_API_key";
 
   Future<String> sendMessage(String message) async {
     final response = await http.post(
-      Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=$apiKey'),
+      Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=$apiKey'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -14,9 +15,7 @@ class ChatService {
         "contents": [
           {
             "parts": [
-              {
-                "text": message
-              }
+              {"text": message}
             ]
           }
         ]
@@ -31,7 +30,8 @@ class ChatService {
         return "Không có phản hồi từ AI.";
       }
     } else {
-      throw Exception("Không thể nhận được phản hồi. Mã lỗi: ${response.statusCode}");
+      throw Exception(
+          "Không thể nhận được phản hồi. Mã lỗi: ${response.statusCode}");
     }
   }
 }
