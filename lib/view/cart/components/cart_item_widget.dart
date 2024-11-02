@@ -100,8 +100,8 @@ import 'package:banhang/model/cart_item_model.dart';
                             setState(() {
                               _isUpdating = true; // Đánh dấu là đang cập nhật
                             });
-                              await cartController.updateQuantityItem(widget.cartitem.id, 1);
-                              _updateQuantity(_qty + 1, 1);
+                            await cartController.updateQuantityItem(widget.cartitem.id, 1);
+                            _updateQuantity(_qty + 1, 1);
                             setState(() {
                               _isUpdating = false; // Khôi phục trạng thái sau khi cập nhật
                             });
@@ -125,6 +125,7 @@ import 'package:banhang/model/cart_item_model.dart';
                             if (_qty > 1) {
                               await cartController.updateQuantityItem(widget.cartitem.id, -1);
                               _updateQuantity(_qty - 1, -1);
+
 
                             }
                             setState(() {

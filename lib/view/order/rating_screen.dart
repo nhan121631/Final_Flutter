@@ -1,5 +1,7 @@
+import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/model/products_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RatingScreen extends StatefulWidget {
   final Product product;
@@ -66,18 +68,21 @@ class _RatingScreenState extends State<RatingScreen> {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (rating > 0 && comment != null && comment!.isNotEmpty) {
-                  // Xử lý gửi đánh giá cho sản phẩm
-                  print('Đánh giá cho ${widget.product.name}: $rating sao');
-                  print('Nhận xét: $comment');
                   // Gọi API để gửi thông tin đánh giá
-                  Navigator.pop(context); // Trở về màn hình trước
-                } else {
-                  // Hiển thị thông báo nếu chưa nhập đầy đủ
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin đánh giá')),
+                  await reviewcontroller.addReview(
+                    userId: authController.user.value.id, // Thay đổi ID người dùng theo thực tế
+                    productId: widget.product.id, // ID sản phẩm
+                    comment: comment!,
+                    star: rating.toInt(),
                   );
+
+                    Get.snackbar("Success",reviewcontroller.reviewMessage.value);
+                  Navigator.pop(context);
+                } else {
+                      Get.snackbar("Fail",'Vui lòng nhập đầy đủ thông tin đánh giá');
+
                 }
               },
               child: const Text('Gửi Đánh Giá'),

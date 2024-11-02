@@ -79,7 +79,7 @@ class CartController extends GetxController {
     try {
       await RemoteCartService().updateCartItem(id, state);
       await getCartItem(authController.user.value.id);
-      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+      getQuantity(authController.user.value.id); // Cập nhật số lượng
       print('Item đã được cập nhật');
       // Thêm logic cập nhật lại giỏ hàng nếu cần
     } catch (e) {

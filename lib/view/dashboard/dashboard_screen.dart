@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import '../../controller/controllers.dart';
 import '../category/category_screen.dart';
+import '../chat/chat_screen.dart';
 import '../order/order_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -23,9 +24,7 @@ class DashboardScreen extends StatelessWidget {
               const HomeScreen(),
               const CategoryScreen(),
                 OrderScreen(),
-              Container(
-                color: Colors.orange,
-              )
+              ChatScreen()
             ],
           ),
         ),

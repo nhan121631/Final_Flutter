@@ -13,14 +13,13 @@ class User {
     required this.fullname,
   });
 
-  // Phương thức tĩnh để tạo đối tượng User từ JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'], // Lấy id từ JSON
-      username: json['userName'], // Lấy username từ JSON
-      email: json['email'], // Lấy email từ JSON
-      password: json['password'], // Lấy password từ JSON
-      fullname: json['fullName'], // Lấy fullname từ JSON
+      id: json['id'] ?? 0,
+      username: json['userName'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      fullname: json['fullName'] ?? '',
     );
   }
 

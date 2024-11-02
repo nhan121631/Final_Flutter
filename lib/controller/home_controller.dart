@@ -16,7 +16,7 @@ class HomeController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingPopular = false.obs;
   RxBool isSearch = false.obs;
-  RxBool isPopular = false.obs;
+  RxBool isPopular = true.obs;
   RxBool isFilter = false.obs;
 
   // Số lượng mặt hàng trong giỏ
@@ -26,7 +26,9 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     isFilter(false);
-  //  getproduct(); // Lấy danh sách sản phẩm
+    isPopular(true);
+
+    //  getproduct(); // Lấy danh sách sản phẩm
     getproductRecomend(); // Lấy sản phẩm gợi ý
     getitemcart(); // Lấy số lượng mặt hàng trong giỏ
    // orderController.fetchOrders(authController.user.value.id);
@@ -59,6 +61,7 @@ class HomeController extends GetxController {
   /// Lấy danh sách sản phẩm gợi ý
   Future<void> getproductRecomend() async {
     isFilter(false);
+    isPopular(true);
 
     try {
       isLoadingPopular(true); // Bắt đầu trạng thái tải

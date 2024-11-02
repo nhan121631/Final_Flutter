@@ -77,7 +77,7 @@ class ProductCard extends StatelessWidget {
             ),
             onPressed: () async {
               //final CartController cartController = Get.find<CartController>(); // Lấy instance từ GetX
-              await cartController.addCart(product.id, authController.user.value.id);
+               cartController.addCart(product.id, authController.user.value.id);
                cartController.update();
                 _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
             },
