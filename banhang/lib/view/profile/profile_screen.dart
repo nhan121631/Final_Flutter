@@ -126,7 +126,7 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 width: 200,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(() => UpdateProfileScreen()),
+                  onPressed: () => {Get.toNamed(AppRoute.updateprofile)},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orangeAccent,
                     side: BorderSide.none,
@@ -145,7 +145,7 @@ class ProfileScreen extends StatelessWidget {
               ProfileMenuWidget(title: "Quản Lý Người Dùng", icon: LineAwesomeIcons.user_check, onPress: () {}),
               const Divider(),
               const SizedBox(height: 10),
-              ProfileMenuWidget(title: "Thông Tin", icon: LineAwesomeIcons.info, onPress: () {}),
+              ProfileMenuWidget(title: "Thông Tin", icon: LineAwesomeIcons.info, onPress: () { Get.toNamed(AppRoute.infoapp); }),
               ProfileMenuWidget(
                 title: "Đăng Xuất",
                 icon: LineAwesomeIcons.alternate_sign_out,

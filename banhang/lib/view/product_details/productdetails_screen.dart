@@ -1,4 +1,3 @@
-import 'package:banhang/controller/cart_controller.dart';
 import 'package:banhang/model/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +6,20 @@ import 'package:intl/intl.dart';
 import '../../controller/controllers.dart';
 import '../../utils/app_constants.dart';
 import 'package:flutter_html/flutter_html.dart';
+
+class Comment {
+  final String userName;
+  final DateTime date;
+  final double rating;
+  final String content;
+
+  Comment({
+    required this.userName,
+    required this.date,
+    required this.rating,
+    required this.content,
+  });
+}
 
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
@@ -17,6 +30,7 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+
   String formatCurrency(double amount) {
     final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
     return vnCurrency.format(amount);
@@ -29,11 +43,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Future<void> _addToCart() async {
     if (!isaddCarted) {
       isaddCarted = true;
+      Get.snackbar("Success", '${widget.product.name} đã được thêm vào giỏ hàng');
       for (int i = 0; i < _qty; i++) {
         await cartController.addCart(widget.product.id, authController.user.value.id);
       }
-
-      Get.snackbar("Success", '${widget.product.name} đã được thêm vào giỏ hàng');
     }
   }
 
@@ -41,30 +54,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.product.name), // Tiêu đề của trang
+        title: Text(widget.product.name),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back), // Biểu tượng quay lại
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Quay lại trang trước
+            Navigator.pop(context);
           },
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView( // Thêm SingleChildScrollView ở đây
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0), // Bo tròn bốn góc của hình ảnh
+                  borderRadius: BorderRadius.circular(20.0),
                   child: Center(
                     child: SizedBox(
-                      width: 360, // Chiều rộng cố định
-                      height: 250, // Chiều cao cố định
+                      width: 360,
+                      height: 250,
                       child: Image.network(
                         '$baseUrl/image/${widget.product.thumbnail}',
                         fit: BoxFit.cover,
@@ -119,7 +132,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Phần mô tả với Scroll
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
@@ -133,19 +145,89 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: SingleChildScrollView( // Thêm thanh cuộn cho mô tả
-                  child: Html(
-                    data: widget.product.description, // Dữ liệu mô tả HTML
-                    style: {
-                      // Bạn có thể tùy chỉnh kiểu dáng cho HTML nếu cần
-                      "body": Style(
-                        fontSize: FontSize(20),
-                        color: Colors.grey.shade700,
-                      ),
+                child: Html(
+                  data: widget.product.description,
+                  style: {
+                    "body": Style(
+                      fontSize: FontSize(20),
+                      color: Colors.grey.shade700,
+                    ),
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Kiểm tra nếu có bình luận, hiển thị ListView
+              if (widget.product.reviews.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'Reviews:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              if (widget.product.reviews.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: ListView.builder(
+                    shrinkWrap: true, // Để ListView hoạt động trong SingleChildScrollView
+                    physics: NeverScrollableScrollPhysics(), // Vô hiệu hóa cuộn độc lập
+                    itemCount: widget.product.reviews.length,
+                    itemBuilder: (context, index) {
+                      final comment = widget.product.reviews[index];
+
+                      // Biến để lưu trữ ngày đã được định dạng
+                      String formattedDate;
+                      // Kiểm tra xem modifyedDate có khác null không
+                      if (widget.product.reviews[index].modifiedDate != null) {
+                        formattedDate = DateFormat('dd/MM/yyyy').format(widget.product.reviews[index].modifiedDate!);
+                      } else {
+                        // Nếu modifyedDate là null, sử dụng createdDate
+                        formattedDate = DateFormat('dd/MM/yyyy').format(widget.product.reviews[index].createdDate!);
+                      }
+
+                      // Sử dụng formattedDate để hiển thị ngày và ghi chú
+                      return Card(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    comment.user.fullname,
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Ngày: $formattedDate${widget.product.reviews[index].modifiedDate != null ? ' (đã chỉnh sửa)' : ''}',
+                                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                              Row(
+                                children: List.generate(5, (starIndex) {
+                                  return Icon(
+                                    starIndex < comment.star ? Icons.star : Icons.star_border,
+                                    color: Colors.amber,
+                                  );
+                                }),
+                              ),
+                              SizedBox(height: 5),
+                              Text(widget.product.reviews[index].comment), // Sửa đổi để sử dụng content
+                            ],
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
-              ),
             ],
           ),
         ),

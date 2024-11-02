@@ -2,6 +2,7 @@ import 'package:banhang/controller/cart_controller.dart';
 import 'package:banhang/controller/auth_controller.dart';
 import 'package:banhang/controller/category_controller.dart';
 import 'package:banhang/controller/home_controller.dart';
+import 'package:banhang/controller/review_controller.dart';
 
 import 'order_controller.dart';
 
@@ -10,4 +11,4 @@ CartController cartController = CartController.instance;
 CategoryController categoryController = CategoryController.instance;
 AuthController authController = AuthController.instance;
 OrderController orderController = OrderController.instance;
-
+Reviewcontroller reviewcontroller = Reviewcontroller.instance;

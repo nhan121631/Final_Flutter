@@ -1,5 +1,8 @@
 import 'package:banhang/view/cart/cart_screen.dart';
 import 'package:banhang/view/dashboard/dashboard_binding.dart';
+import 'package:banhang/view/profile/components/info_screen.dart';
+import 'package:banhang/view/profile/profile_screen.dart';
+import 'package:banhang/view/profile/update_profile_screen.dart';
 import 'package:get/get.dart';
 import 'package:banhang/route/app_route.dart';
 import 'package:banhang/view/dashboard/dashboard_screen.dart';
@@ -54,6 +57,16 @@ class AppPage {
       transition: Transition.fadeIn,
     ),
 
+
+    GetPage(
+      name: AppRoute.updateprofile,
+      page: () => UpdateProfileScreen(),
+    ),
+
+    GetPage(
+      name: AppRoute.infoapp,
+      page: () => InfoScreen(),
+    ),
   ];
 
 }

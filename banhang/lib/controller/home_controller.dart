@@ -1,8 +1,8 @@
-import 'package:banhang/controller/cart_controller.dart';
 import 'package:banhang/service/remote_service/remote_product_service.dart';
 import 'package:get/get.dart';
 import 'package:banhang/model/products_model.dart';
 
+import 'cart_controller.dart';
 import 'controllers.dart';
 
 class HomeController extends GetxController {
@@ -16,7 +16,7 @@ class HomeController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingPopular = false.obs;
   RxBool isSearch = false.obs;
-  RxBool isPopular = false.obs;
+  RxBool isPopular = true.obs;
   RxBool isFilter = false.obs;
 
   // Số lượng mặt hàng trong giỏ
@@ -26,17 +26,19 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     isFilter(false);
-  //  getproduct(); // Lấy danh sách sản phẩm
+    isPopular(true);
+
+    //  getproduct(); // Lấy danh sách sản phẩm
     getproductRecomend(); // Lấy sản phẩm gợi ý
     getitemcart(); // Lấy số lượng mặt hàng trong giỏ
-   // orderController.fetchOrders(authController.user.value.id);
+    // orderController.fetchOrders(authController.user.value.id);
 
   }
 
   // Tăng số lượng mặt hàng trong giỏ
   void getitemcart() {
-       Get.put(CartController());
-      cartController.getQuantity(authController.user.value.id);
+    Get.put(CartController());
+    cartController.getQuantity(authController.user.value.id);
   }
 
   //// Lấy danh sách sản phẩm
@@ -59,6 +61,7 @@ class HomeController extends GetxController {
   /// Lấy danh sách sản phẩm gợi ý
   Future<void> getproductRecomend() async {
     isFilter(false);
+    isPopular(true);
 
     try {
       isLoadingPopular(true); // Bắt đầu trạng thái tải
@@ -90,7 +93,7 @@ class HomeController extends GetxController {
           productPobulars.assignAll(result);
           isSearch(false);
         }
-         else {
+        else {
           productPobulars.assignAll(result);// Thông báo không có sản phẩm
           isSearch(true);
 
@@ -115,23 +118,23 @@ class HomeController extends GetxController {
 
   /// Lọc sản phẩm
   void getProductFilter(double sell1, double sell2) async {
-      try {
-        isLoadingPopular(true);
-        var result = await RemoteProductService().getFilter(sell1, sell2);
-        if (result != null && result.isNotEmpty) {
-          productPobulars.assignAll(result);
-          isFilter(true);
-        }
-        else {
-          productPobulars.assignAll(result);// Thông báo không có sản phẩm
-          isFilter(false);
-
-        }
-      } catch (e) {
-        print('Lỗi khi lọc sản phẩm: $e'); // Bắt lỗi nếu có
-      } finally {
-        print('Số lượng sản phẩm tìm thấy: ${productPobulars.length}'); // In ra số lượng sản phẩm tìm thấy
-        isLoadingPopular(false); // Kết thúc trạng thái tải
+    try {
+      isLoadingPopular(true);
+      var result = await RemoteProductService().getFilter(sell1, sell2);
+      if (result != null && result.isNotEmpty) {
+        productPobulars.assignAll(result);
+        isFilter(true);
       }
+      else {
+        productPobulars.assignAll(result);// Thông báo không có sản phẩm
+        isFilter(false);
+
+      }
+    } catch (e) {
+      print('Lỗi khi lọc sản phẩm: $e'); // Bắt lỗi nếu có
+    } finally {
+      print('Số lượng sản phẩm tìm thấy: ${productPobulars.length}'); // In ra số lượng sản phẩm tìm thấy
+      isLoadingPopular(false); // Kết thúc trạng thái tải
     }
+  }
 }

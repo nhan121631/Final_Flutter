@@ -17,6 +17,7 @@ class CartController extends GetxController {
   @override
   void onInit() {
     getQuantity(authController.user.value.id);
+    print(itemCart);
     super.onInit();
   }
 
@@ -40,10 +41,11 @@ class CartController extends GetxController {
     } catch (e) {
       print("Lỗi khi thêm sản phẩm vào giỏ hàng: $e");
     } finally {
-      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+      //await getQuantity(authController.user.value.id); // Cập nhật số lượng
       _isAddingToCart = false; // Tắt cờ sau khi hoàn thành
     }
   }
+
 
   Future<void> getQuantity(int userId) async {
     try {
@@ -77,7 +79,7 @@ class CartController extends GetxController {
     try {
       await RemoteCartService().updateCartItem(id, state);
       await getCartItem(authController.user.value.id);
-      await getQuantity(authController.user.value.id); // Cập nhật số lượng
+      getQuantity(authController.user.value.id); // Cập nhật số lượng
       print('Item đã được cập nhật');
       // Thêm logic cập nhật lại giỏ hàng nếu cần
     } catch (e) {

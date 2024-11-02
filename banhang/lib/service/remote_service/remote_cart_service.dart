@@ -29,7 +29,7 @@ class RemoteCartService {
       }
     } catch (e) {
       // Xử lý lỗi nếu có
-      print('Error: $e');
+      print('Error get cart: $e');
     }
   }
   Future<int> getQuantity(int idUser) async {
@@ -64,7 +64,7 @@ class RemoteCartService {
 
       // Kiểm tra mã trạng thái
       if (response.statusCode == 200) {
-          var jsonResponse = json.decode(response.body) as List;
+        var jsonResponse = json.decode(response.body) as List;
         return jsonResponse.map((cartitem) => CartItem.fromJson(cartitem)).toList();
       } else {
         // Nếu không thành công, ném ra một ngoại lệ
@@ -72,7 +72,7 @@ class RemoteCartService {
       }
     } catch (e) {
       // Xử lý lỗi nếu có
-      print('Error: $e');
+      print('Error get cart: $e');
       return [];
     }
   }
