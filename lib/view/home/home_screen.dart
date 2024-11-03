@@ -6,6 +6,7 @@ import 'package:banhang/controller/controllers.dart';
 import 'package:banhang/view/home/components/carousel_slider/carousel_loading.dart';
 import 'package:banhang/view/home/components/carousel_slider/carusel_slider_view.dart';
 import 'package:intl/intl.dart';
+import '../category/components/Product_category_cart.dart';
 import '../chat/chat_screen.dart';
 import 'components/product_card/product_card.dart';
 
@@ -35,7 +36,46 @@ class _HomeScreenState extends State<HomeScreen> {
                   return CarouselLoading();
                 }
               }),
-              const SizedBox(height: 40),
+
+              // Chuyển Obx ra ngoài điều kiện if
+              Obx(() {
+                return homeController.productRecommend.isNotEmpty
+                    ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Text(
+                        "Bạn có thể muốn mua",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 150, // Chiều cao cố định cho ListView ngang
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: homeController.productRecommend.length, // Truy cập danh sách sản phẩm
+                        itemBuilder: (BuildContext context, int index) {
+                          final product = homeController.productRecommend[index];
+                          return Container(
+                            width: 100,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            child: ProductCateCard(product: product), // Sử dụng `ProductCateCard` cho từng sản phẩm
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                )
+                    : SizedBox(); // Trả về SizedBox rỗng nếu không có sản phẩm gợi ý
+              }),
+
+
+              const SizedBox(height: 20),
               Obx(() {
                 if (!homeController.isSearch.value) {
                   if (homeController.isFilter.value) {

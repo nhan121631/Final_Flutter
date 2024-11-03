@@ -193,7 +193,7 @@ class MainHeader extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    homeController.getproductRecomend();
+                    homeController.getproductPupular();
                     Navigator.of(context).pop(); // Đóng dialog
                   },
                   child: const Text(

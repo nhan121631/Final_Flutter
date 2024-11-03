@@ -4,9 +4,7 @@ import 'package:banhang/route/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:banhang/model/products_model.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../utils/app_constants.dart';
 import '../../../product_details/productdetails_screen.dart';
 
@@ -21,96 +19,91 @@ class ProductCard extends StatelessWidget {
       final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
       return vnCurrency.format(amount);
     }
+
     return GestureDetector(
-        onTap: () {
-          // // Chuyển hướng đến màn hình chi tiết sản phẩm
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ProductDetailsScreen(product: product),
-          //   ),
-          // );
-          Get.toNamed(AppRoute.details, arguments: {'product': product});
-        },
-     child: Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
-        border: Border.all(color: Colors.grey.withOpacity(.3), width: .2),
-      ),
-      child: Row(
-
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(width: 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15.0),
-            child: Image.network(
-              '$baseUrl/image/${product.thumbnail}',
-              fit: BoxFit.cover,
-              height: 120,
-              width: 120,
-
-            ),
-          ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                product.name,
-                style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      onTap: () {
+        Get.toNamed(AppRoute.details, arguments: {'product': product});
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(color: Colors.grey.withOpacity(.3), width: .2),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(width: 10),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Image.network(
+                '$baseUrl/image/${product.thumbnail}',
+                fit: BoxFit.cover,
+                height: 120,
+                width: 120,
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                '\₫${formatCurrency(product.sellPrice)}',
-                style: TextStyle(fontSize: 20, color: Colors.black),
-              ),
-            ],
-          ),
-          const SizedBox(width: 10),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.orange.shade500,
-              onPrimary: Colors.white,
             ),
-            onPressed: () async {
-              //final CartController cartController = Get.find<CartController>(); // Lấy instance từ GetX
-               cartController.addCart(product.id, authController.user.value.id);
-               cartController.update();
+            const SizedBox(width: 10),
+            // Wrap Column in Flexible to prevent overflow
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    product.name,
+                    maxLines: 2, // Allow wrapping to 2 lines
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    '\₫${formatCurrency(product.sellPrice)}',
+                    style: const TextStyle(fontSize: 20, color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange.shade500,
+                onPrimary: Colors.white,
+              ),
+              onPressed: () async {
+                cartController.addCart(product.id, authController.user.value.id);
+                cartController.update();
                 _showDialog(context, 'Success', 'Thêm vào giỏ hàng thành công.');
-            },
-            icon: const Icon(Icons.add, size: 18),
-            label: const Text("Add to Cart"),
-          ),
-          const SizedBox(width: 10),
-        ],
+              },
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text("Add to Cart"),
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
       ),
-    ),
     );
   }
 
-  // Hàm hiển thị dialog
+  // Show dialog function
   void _showDialog(BuildContext context, String title, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title,
-          style: const TextStyle(color: Colors.green),),
+          title: Text(title, style: const TextStyle(color: Colors.green)),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.check, color: Colors.green), // Use check icon for success
-              const SizedBox(width: 8), // Spacing between icon and text
-              Text(message), // Display the message
+              const Icon(Icons.check, color: Colors.green),
+              const SizedBox(width: 8),
+              Text(message),
             ],
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Đóng dialog
+                Navigator.of(context).pop();
               },
               child: const Text('OK'),
             ),

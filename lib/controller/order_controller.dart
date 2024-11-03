@@ -56,8 +56,10 @@ class OrderController extends GetxController {
         total: total,
       );
        cartController.getQuantity(authController.user.value.id);
-       homeController.getproductRecomend();
+       homeController.getproductPupular();
        categoryController.fetchCategories();
+       homeController.getProductRecommedAI(authController.user.value.id);
+
       orderMessage.value = message; // Cập nhật thông báo
     } catch (e) {
       orderMessage.value = 'Error: ${e.toString()}'; // Xử lý lỗi

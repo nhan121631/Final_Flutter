@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   // Danh sách sản phẩm và sản phẩm phổ biến
   RxList<Product> products = List<Product>.empty(growable: true).obs;
   RxList<Product> productPobulars = List<Product>.empty(growable: true).obs;
+  RxList<Product> productRecommend = List<Product>.empty(growable: true).obs;
 
   // Trạng thái tải dữ liệu
   RxBool isLoading = false.obs;
@@ -18,6 +19,7 @@ class HomeController extends GetxController {
   RxBool isSearch = false.obs;
   RxBool isPopular = true.obs;
   RxBool isFilter = false.obs;
+  RxBool isLoadingRS = false.obs;
 
   // Số lượng mặt hàng trong giỏ
   RxInt itemCart = 0.obs;
@@ -28,8 +30,8 @@ class HomeController extends GetxController {
     isFilter(false);
     isPopular(true);
 
-    //  getproduct(); // Lấy danh sách sản phẩm
-    getproductRecomend(); // Lấy sản phẩm gợi ý
+    getProductRecommedAI(authController.user.value.id);
+    getproductPupular(); // Lấy sản phẩm gợi ý
     getitemcart(); // Lấy số lượng mặt hàng trong giỏ
    // orderController.fetchOrders(authController.user.value.id);
 
@@ -59,7 +61,7 @@ class HomeController extends GetxController {
   // }
 
   /// Lấy danh sách sản phẩm gợi ý
-  Future<void> getproductRecomend() async {
+  Future<void> getproductPupular() async {
     isFilter(false);
     isPopular(true);
 
@@ -109,7 +111,7 @@ class HomeController extends GetxController {
       // Khi param là rỗng, gọi lại danh sách sản phẩm phổ biến
       isSearch(false);
       isPopular(true);
-      await getproductRecomend();
+      await getproductPupular();
     }
 
     print('Search: ${isSearch}');
@@ -135,6 +137,21 @@ class HomeController extends GetxController {
       } finally {
         print('Số lượng sản phẩm tìm thấy: ${productPobulars.length}'); // In ra số lượng sản phẩm tìm thấy
         isLoadingPopular(false); // Kết thúc trạng thái tải
+      }
+    }
+
+    void getProductRecommedAI(int user_id) async {
+      try {
+        isLoadingRS(true);
+        var result = await RemoteProductService().getRecommend(user_id);
+        if (result != null && result.isNotEmpty) {
+          productRecommend.assignAll(result);
+        }
+      } catch (e) {
+        print('Lỗi khi recommend sản phẩm: $e'); // Bắt lỗi nếu có
+      } finally {
+        print('Số lượng sản phẩm tìm thấy: ${productRecommend.length}'); // In ra số lượng sản phẩm tìm thấy
+        isLoadingRS(false); // Kết thúc trạng thái tải
       }
     }
 }
