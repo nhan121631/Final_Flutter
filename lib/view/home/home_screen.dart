@@ -26,106 +26,107 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          Column(
-            children: [
-              const MainHeader(),
-              Obx(() {
-                if (homeController.productPobulars.isNotEmpty) {
-                  return CarouselSliderView(/*products: homeController.products*/);
-                } else {
-                  return CarouselLoading();
-                }
-              }),
+          SingleChildScrollView( // Thêm SingleChildScrollView ở đây
+            child: Column(
+              children: [
+                const MainHeader(),
 
-              // Chuyển Obx ra ngoài điều kiện if
-              Obx(() {
-                return homeController.productRecommend.isNotEmpty
-                    ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Text(
-                        "Bạn có thể muốn mua",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                const CarouselSliderView(/*products: homeController.products*/),
+
+
+
+                Obx(() {
+                  return homeController.productRecommend.isNotEmpty
+                      ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          "Bạn có thể muốn mua",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 150, // Chiều cao cố định cho ListView ngang
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: homeController.productRecommend.length, // Truy cập danh sách sản phẩm
-                        itemBuilder: (BuildContext context, int index) {
-                          final product = homeController.productRecommend[index];
-                          return Container(
-                            width: 100,
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            child: ProductCateCard(product: product), // Sử dụng `ProductCateCard` cho từng sản phẩm
-                          );
-                        },
+                      SizedBox(
+                        height: 150, // Chiều cao cố định cho ListView ngang
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: homeController.productRecommend.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final product = homeController.productRecommend[index];
+                            return Container(
+                              width: 100,
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              child: ProductCateCard(product: product),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                )
-                    : SizedBox(); // Trả về SizedBox rỗng nếu không có sản phẩm gợi ý
-              }),
+                    ],
+                  )
+                      : const SizedBox();
+                }),
 
+                const SizedBox(height: 20),
+                Obx(() {
+                  if (!homeController.isSearch.value) {
+                    if (homeController.isFilter.value) {
+                      return const Text(
+                        "Sản phẩm lọc theo giá",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      );
+                    }
 
-              const SizedBox(height: 20),
-              Obx(() {
-                if (!homeController.isSearch.value) {
-                  if (homeController.isFilter.value) {
-                    return const Text(
-                      "Sản phẩm lọc theo giá",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold),
-                    );
-                  }
-
-                  if (homeController.isPopular.value) {
-                    return const Text(
-                      "Sản phẩm bán chạy",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold),
-                    );
+                    if (homeController.isPopular.value) {
+                      return const Text(
+                        "Sản phẩm bán chạy",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      );
+                    } else {
+                      return const Text(
+                        "Sản phẩm cần tìm",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      );
+                    }
                   } else {
                     return const Text(
-                      "Sản phẩm cần tìm",
+                      "Không tìm thấy sản phẩm",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 30,
                           fontWeight: FontWeight.bold),
                     );
                   }
-                } else {
-                  return const Text(
-                    "Không tìm thấy sản phẩm",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold),
-                  );
-                }
-              }),
-              const SizedBox(height: 20),
-              Obx(() {
-                if (homeController.productPobulars.isNotEmpty) {
-                  return Expanded(
-                    child: ProductListView(products: homeController.productPobulars),
-                  );
-                } else {
-                  return Expanded(child: ProductLoading());
-                }
-              }),
-            ],
+                }),
+                const SizedBox(height: 20),
+                Obx(() {
+                  if (homeController.productPobulars.isNotEmpty) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: ProductListView(products: homeController.productPobulars),
+                    );
+                  } else {
+                    return const SizedBox(
+                      height: 300, // Điều chỉnh chiều cao cho loading
+                      child: ProductLoading(),
+                    );
+                  }
+                }),
+              ],
+            ),
           ),
 
           Positioned(
@@ -138,22 +139,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onDragEnd: (details) {
                 setState(() {
-                  // Cập nhật vị trí quả bóng chat khi người dùng thả
-                  _chatBallPositionX = details.offset.dx - 30; // Điều chỉnh để căn giữa quả bóng
-                  _chatBallPositionY = details.offset.dy - 30; // Điều chỉnh để căn giữa quả bóng
+                  _chatBallPositionX = details.offset.dx - 30;
+                  _chatBallPositionY = details.offset.dy - 30;
                 });
               },
               childWhenDragging: Container(),
               child: GestureDetector(
                 onTap: () {
-                  // Mở ChatScreen khi ấn vào quả bóng chat
                   Get.to(() => ChatScreen());
                 },
                 child: const CircleAvatar(
                   backgroundColor: Colors.deepOrange,
                   child: Icon(Icons.chat, color: Colors.white),
                 ),
-              ), // Ẩn khi kéo
+              ),
             ),
           ),
         ],

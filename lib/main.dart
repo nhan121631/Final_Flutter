@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:banhang/route/app_page.dart';
 import 'package:banhang/route/app_route.dart';
 import 'package:banhang/theme/app_theme.dart';
-
 void main() {
   runApp(MyApp());
 }

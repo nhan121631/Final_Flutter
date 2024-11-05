@@ -10,6 +10,8 @@ import '../view/auth/login/AcceptScreen.dart';
 import '../view/auth/login/FogotPasswordScreen.dart';
 import '../view/cart/cart_screen.dart';
 import '../view/product_details/productdetails_screen.dart';
+import '../view/profile/components/info_screen.dart';
+import '../view/profile/update_profile_screen.dart';
 
 class AppPage {
   static var list = [
@@ -55,6 +57,15 @@ class AppPage {
       name: AppRoute.details,
       page: () => ProductDetailsScreen(product: Get.arguments?['product']),
       transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: AppRoute.updateprofile,
+      page: () => UpdateProfileScreen(),
+    ),
+
+    GetPage(
+      name: AppRoute.infoapp,
+      page: () => InfoScreen(),
     ),
 
   ];

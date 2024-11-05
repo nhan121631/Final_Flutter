@@ -5,9 +5,11 @@ import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:get/get.dart';
 
 import '../../controller/controllers.dart';
+import '../../testview/Location_test.dart';
 import '../category/category_screen.dart';
 import '../chat/chat_screen.dart';
 import '../order/order_screen.dart';
+import '../profile/profile_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -24,7 +26,8 @@ class DashboardScreen extends StatelessWidget {
               const HomeScreen(),
               const CategoryScreen(),
                 OrderScreen(),
-              ChatScreen()
+              const ProfileScreen()
+              //LocationExample()
             ],
           ),
         ),

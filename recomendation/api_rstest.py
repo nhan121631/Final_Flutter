@@ -128,22 +128,34 @@ def extract_image_features(image_urls):
     return np.array(images)
 
 # Hàm tính tương đồng tổng hợp
+# Hàm tính tương đồng tổng hợp
 def calculate_combined_similarity(all_products_df):
+    # Làm sạch HTML trong cột `description`
+    all_products_df['description_cleaned'] = all_products_df['description'].apply(clean_html)
+    
+    # Kết hợp các cột thành một cột văn bản tổng hợp
+    combined_text = all_products_df['product_name'] + " " + all_products_df['category_name'] + " " + all_products_df['description_cleaned']
+    
+    # Khởi tạo vectorizer và tính toán ma trận TF-IDF
     vectorizer = TfidfVectorizer(stop_words='english')
-    combined_text = all_products_df['product_name'] + " " + all_products_df['category_name'] + " " + all_products_df['description']
-    all_products_df['combined_text_cleaned'] = combined_text.apply(clean_html)
-    tfidf_matrix = vectorizer.fit_transform(all_products_df['combined_text_cleaned'])
+    tfidf_matrix = vectorizer.fit_transform(combined_text)
+    
+    # Tính toán tương đồng văn bản
     text_similarity = cosine_similarity(tfidf_matrix)
     
+    # Tính toán tương đồng giá
     prices = all_products_df['sell_price'].values.reshape(-1, 1)
     price_similarity = cosine_similarity(prices)
     
+    # Tính toán tương đồng hình ảnh
     image_urls = all_products_df['image_name'].tolist()
     image_features = extract_image_features(image_urls)
     image_similarity = cosine_similarity(image_features)
     
+    # Tổng hợp các tương đồng
     combined_similarity = text_similarity + price_similarity + image_similarity
     return combined_similarity
+
 
 # Hàm gợi ý sản phẩm
 def recommend_based_on_purchases(purchased_products_df, all_products_df):

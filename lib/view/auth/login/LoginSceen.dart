@@ -113,7 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           await authController.login(email, password);
 
                           if (authController.isLoggedIn.value) {
-                            Get.offAllNamed(AppRoute.dashboard);
+                            Get.toNamed(AppRoute.dashboard);
+                            await cartController.getQuantity(authController.user.value.id);
+
                             print("success");
                           } else {
                             Get.snackbar('Login Failed', 'Invalid username or password',

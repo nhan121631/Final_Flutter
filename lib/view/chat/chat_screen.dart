@@ -11,7 +11,7 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat AI', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.orange, // Màu nền app bar
+        backgroundColor: Colors.orange,
       ),
       body: Column(
         children: [
