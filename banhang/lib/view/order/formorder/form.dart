@@ -175,6 +175,18 @@ class _OrderFormState extends State<OrderForm> {
                 icon: Icons.phone,
                 onSaved: (value) => _phone = value!,
                 keyboardType: TextInputType.phone,
+                validator: (value) {
+                  // Kiểm tra nếu người dùng chưa nhập số điện thoại
+                  if (value == null || value.isEmpty) {
+                    return 'Vui lòng nhập Số Điện Thoại';
+                  }
+                  // Kiểm tra định dạng số điện thoại Việt Nam
+                  final phoneRegExp = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$');
+                  if (!phoneRegExp.hasMatch(value)) {
+                    return 'Số điện thoại không đúng định dạng';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               _buildAddressField(),
@@ -215,6 +227,10 @@ class _OrderFormState extends State<OrderForm> {
                 icon: Icons.note,
                 onSaved: (value) => _note = value ?? '',
                 maxLines: 3,
+                validator: (value) {
+                  // Không yêu cầu trường Ghi Chú phải có giá trị
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               const Divider(),
