@@ -1,11 +1,11 @@
+import 'package:banhang/controller/controllers.dart';
+import 'package:banhang/route/app_page.dart';
+import 'package:banhang/route/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-
-import '../../../controller/controllers.dart';
-import '../../../route/app_route.dart';
+import 'package:banhang/controller/order_controller.dart'; // Import OrderController
 
 class OrderForm extends StatefulWidget {
   final double total;
@@ -23,56 +23,10 @@ class _OrderFormState extends State<OrderForm> {
   String _paymentMethod = 'Cash';
   String _note = '';
 
-  // Khai báo TextEditingController cho địa chỉ
-  final TextEditingController _addressController = TextEditingController();
-
   // Hàm định dạng tiền tệ
   String formatCurrency(double amount) {
     final NumberFormat vnCurrency = NumberFormat('#,##0', 'vi_VN');
     return vnCurrency.format(amount);
-  }
-
-  // Hàm lấy địa chỉ từ vị trí hiện tại
-  Future<void> _getCurrentLocation() async {
-    print("location");
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        setState(() {
-          _address = 'Không có quyền truy cập vào vị trí';
-        });
-        return;
-      }
-    }
-
-    try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks[0];
-
-      // Tạo danh sách các thành phần địa chỉ
-      List<String> addressParts = [
-        // place.name ?? "",
-        place.street ?? "",
-        place.locality ?? "",
-        place.subAdministrativeArea ?? "",
-        place.administrativeArea ?? "",
-        place.country ?? "",
-      ];
-
-      // Lọc các thành phần trống và nối chúng thành chuỗi địa chỉ
-      _address = addressParts.where((part) => part.isNotEmpty).join(', ');
-
-      setState(() {
-        _addressController.text = _address; // Cập nhật giá trị trong TextEditingController
-        print(_address);
-      });
-    } catch (e) {
-      setState(() {
-        _address = 'Không thể lấy địa chỉ hiện tại';
-      });
-    }
   }
 
   // Hàm hiển thị AlertDialog xác nhận thanh toán
@@ -81,29 +35,25 @@ class _OrderFormState extends State<OrderForm> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            'Xác Nhận Đặt Hàng',
-            style: TextStyle(color: Colors.orange, fontSize: 25),
-          ),
-          content: const Text(
-            'Bạn có chắc chắn muốn đặt hàng không?',
-            style: TextStyle(color: Colors.grey, fontSize: 20),
-          ),
+          title: const Text('Xác Nhận Đặt Hàng',
+            style: TextStyle(color: Colors.orange,
+                fontSize: 25),),
+          content: const Text('Bạn có chắc chắn muốn đặt hàng không?',
+            style: TextStyle(color: Colors.grey,
+                fontSize: 20),),
           actions: <Widget>[
             TextButton(
-              child: const Text(
-                'No',
-                style: TextStyle(color: Colors.red, fontSize: 25),
-              ),
+              child: const Text('No',
+                style: TextStyle(color: Colors.red,
+                    fontSize: 25),),
               onPressed: () {
                 Navigator.of(context).pop(); // Đóng hộp thoại
               },
             ),
             TextButton(
-              child: const Text(
-                'Yes',
-                style: TextStyle(color: Colors.green, fontSize: 25),
-              ),
+              child: const Text('Yes',
+                  style: TextStyle(color: Colors.green,
+                    fontSize: 25,)),
               onPressed: () async {
                 Navigator.of(context).pop(); // Đóng hộp thoại trước khi thực hiện thanh toán
                 await _processOrder(); // Gọi hàm thực hiện thanh toán
@@ -177,15 +127,19 @@ class _OrderFormState extends State<OrderForm> {
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
-              _buildAddressField(),
+              _buildTextField(
+                label: 'Địa Chỉ',
+                hint: 'Nhập địa chỉ',
+                icon: Icons.location_on,
+                onSaved: (value) => _address = value!,
+              ),
               const SizedBox(height: 16),
               const Text(
                 'Phương Thức Thanh Toán',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.orange,
-                ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange),
               ),
               const SizedBox(height: 8),
               Row(
@@ -232,7 +186,7 @@ class _OrderFormState extends State<OrderForm> {
               const SizedBox(height: 24),
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: _showConfirmationDialog,
+                  onPressed: _showConfirmationDialog, // Gọi hộp thoại xác nhận
                   icon: const Icon(Icons.check_circle, color: Colors.white),
                   label: const Text('Xác Nhận Đặt Hàng'),
                   style: ElevatedButton.styleFrom(
@@ -256,13 +210,10 @@ class _OrderFormState extends State<OrderForm> {
     required String hint,
     required IconData icon,
     required FormFieldSetter<String> onSaved,
-    TextEditingController? controller, // Thêm controller
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
-    String? Function(String?)? validator,
   }) {
     return TextFormField(
-      controller: controller, // Thêm controller vào TextFormField
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -276,33 +227,13 @@ class _OrderFormState extends State<OrderForm> {
       ),
       keyboardType: keyboardType,
       maxLines: maxLines,
-      validator: validator ?? (value) {
+      validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Vui lòng nhập $label';
         }
         return null;
       },
       onSaved: onSaved,
-    );
-  }
-
-  Widget _buildAddressField() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildTextField(
-            label: 'Địa Chỉ',
-            hint: 'Nhập địa chỉ',
-            icon: Icons.location_on,
-            onSaved: (value) => _address = value!,
-            controller: _addressController, // Sử dụng controller
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.location_searching, color: Colors.orange),
-          onPressed: _getCurrentLocation, // Gọi hàm lấy địa chỉ
-        ),
-      ],
     );
   }
 }

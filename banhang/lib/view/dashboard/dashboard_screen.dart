@@ -24,7 +24,7 @@ class DashboardScreen extends StatelessWidget {
             children: [
               const HomeScreen(),
               const CategoryScreen(),
-                OrderScreen(),
+              OrderScreen(),
               ProfileScreen()
             ],
           ),

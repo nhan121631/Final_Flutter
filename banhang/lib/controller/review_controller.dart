@@ -18,7 +18,7 @@ class Reviewcontroller extends GetxController {
     try {
       // Gọi service để thực hiện checkout
       String message = await ReviewService().addReview(userId: userId, productId: productId, star: star, comment: comment);
-      homeController.getproductRecomend();
+      homeController.getproductPupular();
       categoryController.fetchCategories();
       reviewMessage.value = message; // Cập nhật thông báo
     } catch (e) {

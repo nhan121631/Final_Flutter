@@ -167,7 +167,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         onPressed: () {
                           authController.logout();
-                          Get.toNamed(AppRoute.login);
+                          Get.offNamed(AppRoute.login);
                         },
                         child: const Text("Có"),
                       ),

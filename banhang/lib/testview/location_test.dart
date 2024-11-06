@@ -4,9 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
-import '../../../controller/controllers.dart';
-import '../../../route/app_route.dart';
-
 class OrderForm extends StatefulWidget {
   final double total;
   OrderForm({super.key, required this.total});
@@ -47,7 +44,7 @@ class _OrderFormState extends State<OrderForm> {
     }
 
     try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks[0];
 
@@ -121,20 +118,11 @@ class _OrderFormState extends State<OrderForm> {
       _formKey.currentState!.save();
 
       // Gọi đến OrderController để thực hiện checkout
-      await orderController.checkOutOrder(
-        userId: authController.user.value.id,
-        name: _fullName,
-        phone: _phone,
-        address: _address,
-        payment: _paymentMethod == 'Cash' ? 1 : 2,
-        note: _note,
-        total: widget.total,
-      );
+      // Thêm logic xử lý đặt hàng của bạn tại đây
 
-      // Hiển thị thông báo thành công hoặc lỗi
-      String message = orderController.orderMessage.value;
-      Get.snackbar("OK", message);
-      Get.offAllNamed(AppRoute.dashboard);
+      Get.snackbar("OK", "Đặt hàng thành công!");
+      // Duyệt đến trang dashboard
+      Get.offAllNamed('/dashboard');
     }
   }
 

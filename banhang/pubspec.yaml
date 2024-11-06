@@ -31,6 +31,10 @@ dependencies:
   hive_flutter: ^1.0.8
   email_validator: ^2.0.1 #regis-screen
 
+  shared_preferences: ^2.0.0
+  geocoding: ^2.0.0
+  geolocator: ^8.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

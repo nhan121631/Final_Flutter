@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 // import 'package:hive/hive.dart';
 import '../model/user_model.dart';
@@ -65,11 +66,23 @@ class AuthController extends GetxController {
   }
 // Phương thức quên mật khẩu
   Future<void> forgotPassword(String email) async {
-
     error.value = "";
+
+    if (email.isEmpty) {
+      error.value = "Please enter your email";
+      return;
+    }
+
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(email)) {
+      error.value = "Invalid Email";
+      return;
+    }
+
     try {
       final response = await authService.forgotPassword(email);
 
+      // Sử dụng thông báo từ response backend
       if (response['success']) {
         print('Mã đặt lại mật khẩu đã gửi đến email: $email');
         error.value = "";
@@ -79,7 +92,7 @@ class AuthController extends GetxController {
       } else {
         print('Lỗi: ${response['message']}');
         setForgotStatus(false);
-        error.value = response['message'];
+        error.value = response['message']; // Thông báo từ backend
       }
     } catch (e) {
       print('Lỗi xảy ra khi yêu cầu đặt lại mật khẩu: $e');
@@ -136,8 +149,14 @@ class AuthController extends GetxController {
     }
   }
 
-  void logout() {
-    user.value = User(id: 0, username: '', email: '', password: '', fullname: ''); // Xóa thông tin người dùng
+  Future<void> logout() async{
+    user.value = User(id: 0, username: '', email: '', password: '', fullname: ''); // Đặt lại thông tin người dùng về giá trị mặc định
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId');
+    await prefs.remove('username');
+    await prefs.remove('email');
+    await prefs.remove('fullname');
+
     setLoginStatus(false); // Đặt trạng thái đăng nhập thành false
   }
 

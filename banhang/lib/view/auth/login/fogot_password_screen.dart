@@ -78,21 +78,28 @@ class ForgotPasswordScreen extends StatelessWidget {
                           if (email.isNotEmpty) {
                             await AuthController.instance.forgotPassword(email);
 
+                            // Kiểm tra nếu yêu cầu đặt lại mật khẩu thành công
                             if (AuthController.instance.isForgot.value) {
-                              Get.snackbar('Receive Code Failed',
+                              Get.snackbar(
+                                'Success',
                                 'Verification code sent successfully',
-                                duration: const Duration(seconds: 3),);
-                              Get.toNamed('${AppRoute.forgotpass}${AppRoute
-                                  .acceptcode}');
+                                duration: const Duration(seconds: 3),
+                              );
+                              Get.toNamed('${AppRoute.forgotpass}${AppRoute.acceptcode}');
                               print("success");
                             } else {
+                              // Hiển thị thông báo lỗi từ backend nếu có lỗi
                               Get.snackbar(
-                                'Receiving code failed', 'Invalid Email',
-                                duration: const Duration(seconds: 2),);
+                                'Receiving code failed',
+                                AuthController.instance.error.value.isNotEmpty
+                                    ? AuthController.instance.error.value
+                                    : 'Invalid Email',
+                                duration: const Duration(seconds: 2),
+                              );
                             }
                           } else {
-                            Get.snackbar("Error",
-                                "Please enter your email"); // Thông báo lỗi nếu email rỗng
+                            // Thông báo lỗi nếu email rỗng
+                            Get.snackbar("Error", "Please enter your email", duration: const Duration(seconds: 2));
                           }
                         }
                         },
