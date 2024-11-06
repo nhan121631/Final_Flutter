@@ -39,12 +39,15 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Danh sách Đơn Hàng'),
+        automaticallyImplyLeading: false,
+        title: const Center(
+          child: Text('Danh sách Đơn Hàng'),
+        ),
         backgroundColor: Colors.orange.shade800,
         elevation: 0,
       ),
       body: ListView.builder(
-        itemCount: orders.length + 1, // Thêm một phần tử để hiển thị nút "Tải thêm"
+        itemCount: orders.length + 1,
         itemBuilder: (context, index) {
           if (index < orders.length) {
             final order = orders[index];

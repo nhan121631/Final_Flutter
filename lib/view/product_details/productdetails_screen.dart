@@ -109,6 +109,41 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
               ),
+              if (widget.product.reviews.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 30,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        (widget.product.reviews
+                            .map((review) => review.star)
+                            .reduce((a, b) => a + b) / widget.product.reviews.length
+                        ).toStringAsFixed(1),
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        "(${widget.product.reviews.length} lượt)",
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
