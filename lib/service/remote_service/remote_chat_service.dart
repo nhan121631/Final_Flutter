@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ChatService {
-  final String apiKey =
-      "KEY"; // Thay bằng API key của bạn AIzaSyBNa2gR4gLPmrBIFeUvGqs6e8KfUYw7LZ0
+  final String apiKey = "KEY"; // Thay bằng API key của bạn
   final List<Map<String, dynamic>> history =
       []; // Lưu trữ lịch sử cuộc trò chuyện
 
